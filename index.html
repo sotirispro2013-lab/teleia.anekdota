@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ΤΕΛΕΙΑ ΑΝΕΚΔΟΤΑ</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+    body{background:#fff7c7;transition:.3s}
+    body.dark{background:#0f0f0f;color:#fff}
+    header{position:sticky;top:0;background:rgba(255,255,255,.8);backdrop-filter:blur(10px);display:flex;justify-content:space-between;padding:16px;z-index:10}
+    body.dark header{background:rgba(0,0,0,.7)}
+    h1{color:#f4b400}
+    .controls button{margin-left:10px;padding:10px;border:none;border-radius:10px;cursor:pointer;font-weight:bold}
+    .lang{background:#ffd54f}
+    .darkbtn{background:#333;color:#fff}
+    .container{max-width:900px;margin:auto;padding:20px}
+    .post{background:rgba(255,255,255,.9);margin-bottom:14px;padding:14px;border-radius:14px;border:2px solid #ffe082;transition:.2s}
+    body.dark .post{background:#1e1e1e;border-color:#333}
+    .post:hover{transform:scale(1.01)}
+    .text{margin-top:4px}
+    input{width:100%;padding:12px;margin:10px 0;border-radius:10px;border:2px solid #f4b400}
+  </style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>ΤΕΛΕΙΑ ΑΝΕΚΔΟΤΑ 😂</h1>
+    <small>social feed jokes</small>
+  </div>
+  <div class="controls">
+    <button class="lang" onclick="toggleLang()">EN/GR</button>
+    <button class="darkbtn" onclick="toggleDark()">🌙</button>
+  </div>
+</header>
+<div class="container">
+  <input id="search" placeholder="search jokes..." oninput="render()" />
+  <div id="feed"></div>
+</div>
+<script>
+let lang='gr'
+
+const jokes=[
+// TECH (1-30)
+{en:"My WiFi has more mood swings than me.",gr:"Το WiFi έχει περισσότερες αλλαγές διάθεσης από εμένα."},
+{en:"My laptop fan sounds like it’s judging me.",gr:"Ο ανεμιστήρας του laptop με κρίνει."},
+{en:"I clicked update and lost my will to live.",gr:"Πάτησα update και έχασα τη θέληση για ζωή."},
+{en:"My phone knows my secrets better than I do.",gr:"Το κινητό ξέρει τα μυστικά μου καλύτερα από εμένα."},
+{en:"My passwords are emotionally damaged.",gr:"Οι κωδικοί μου είναι συναισθηματικά τραυματισμένοι."},
+{en:"I open settings and forget why I exist.",gr:"Ανοίγω settings και ξεχνάω γιατί υπάρχω."},
+{en:"My browser tabs are a mental breakdown.",gr:"Τα tabs είναι ψυχολογική κατάρρευση."},
+{en:"I trust autocorrect to ruin my life.",gr:"Εμπιστεύομαι το autocorrect να καταστρέψει τη ζωή μου."},
+{en:"My phone battery drops faster than my motivation.",gr:"Η μπαταρία πέφτει πιο γρήγορα από το motivation."},
+{en:"I scroll without purpose or direction.",gr:"Κάνω scroll χωρίς σκοπό."},
+
+// LIFE (31-60)
+{en:"My life is a series of loading screens.",gr:"Η ζωή μου είναι loading screens."},
+{en:"I trip over my own thoughts.",gr:"Σκοντάφτω στις σκέψεις μου."},
+{en:"My existence is slightly delayed.",gr:"Η ύπαρξή μου είναι καθυστερημένη."},
+{en:"I exist in low resolution reality.",gr:"Υπάρχω σε low resolution."},
+{en:"My plans expire faster than milk.",gr:"Τα σχέδιά μου λήγουν πιο γρήγορα από το γάλα."},
+{en:"I lose keys and confidence equally fast.",gr:"Χάνω κλειδιά και αυτοπεποίθηση το ίδιο γρήγορα."},
+{en:"Life gave me notifications but no instructions.",gr:"Η ζωή μου έδωσε notifications χωρίς οδηγίες."},
+{en:"I reboot my personality daily.",gr:"Κάνω reboot στην προσωπικότητα μου καθημερινά."},
+{en:"Reality feels like a glitchy simulation.",gr:"Η πραγματικότητα είναι glitchy simulation."},
+{en:"I survive purely on accident.",gr:"Επιβιώνω καθαρά από τύχη."},
+
+// MOTIVATION (61-90)
+{en:"My motivation left the chat permanently.",gr:"Το motivation έφυγε μόνιμα."},
+{en:"I plan to succeed tomorrow again.",gr:"Σχεδιάζω να πετύχω αύριο πάλι."},
+{en:"I work best under imaginary pressure.",gr:"Δουλεύω καλύτερα σε φανταστική πίεση."},
+{en:"My ambition is on airplane mode.",gr:"Η φιλοδοξία είναι airplane mode."},
+{en:"I delay everything professionally.",gr:"Καθυστερώ τα πάντα επαγγελματικά."},
+{en:"My goals are still loading.",gr:"Οι στόχοι φορτώνουν ακόμα."},
+{en:"I wake up tired in advance.",gr:"Ξυπνάω κουρασμένος από πριν."},
+{en:"Success feels like a bug I can’t trigger.",gr:"Η επιτυχία είναι bug."},
+{en:"I almost become productive daily.",gr:"Σχεδόν γίνομαι παραγωγικός καθημερινά."},
+{en:"My energy is permanently low battery.",gr:"Η ενέργεια είναι low battery."},
+
+// FOOD (91-120)
+{en:"I cook like it's experimental science.",gr:"Μαγειρεύω σαν πείραμα."},
+{en:"My fridge is a museum of leftovers.",gr:"Το ψυγείο είναι μουσείο leftovers."},
+{en:"I eat emotionally and frequently.",gr:"Τρώω συναισθηματικά και συχνά."},
+{en:"My diet is fictional.",gr:"Η δίαιτα μου είναι φανταστική."},
+{en:"I open snacks like loot boxes.",gr:"Ανοίγω snacks σαν loot boxes."},
+{en:"Cooking instructions are optional to me.",gr:"Οι οδηγίες μαγειρικής είναι προαιρετικές."},
+{en:"I burn water sometimes.",gr:"Καίω ακόμα και το νερό."},
+{en:"My kitchen is chaos theory.",gr:"Η κουζίνα είναι chaos theory."},
+{en:"I snack like it's a hobby.",gr:"Τσιμπολογάω σαν hobby."},
+{en:"Food tastes better at midnight.",gr:"Το φαγητό είναι καλύτερο τα μεσάνυχτα."},
+
+// SOCIAL (121-150)
+{en:"I reply mentally but not physically.",gr:"Απαντάω στο μυαλό αλλά όχι στην πραγματικότητα."},
+{en:"My social battery is always empty.",gr:"Η κοινωνική μπαταρία είναι άδεια."},
+{en:"I attend conversations as a background character.",gr:"Είμαι background χαρακτήρας."},
+{en:"I read messages and panic later.",gr:"Διαβάζω μηνύματα και πανικοβάλλομαι μετά."},
+{en:"I ghost even myself sometimes.",gr:"Ghostάρω ακόμα και τον εαυτό μου."},
+{en:"My communication skills are on vacation.",gr:"Οι επικοινωνιακές μου δεξιότητες είναι διακοπές."},
+{en:"I say hi and regret it instantly.",gr:"Λέω γεια και το μετανιώνω."},
+{en:"Small talk drains my soul.",gr:"Το small talk μου ρουφάει την ψυχή."},
+{en:"I overthink every emoji I send.",gr:"Υπεραναλύω κάθε emoji."},
+{en:"I exist in read receipts only.",gr:"Υπάρχω μόνο στα read receipts."},
+
+// ABSURD (151-180)
+{en:"I argue with myself and lose.",gr:"Καβγαδίζω με τον εαυτό μου και χάνω."},
+{en:"My shadow is more productive than me.",gr:"Η σκιά μου είναι πιο παραγωγική."},
+{en:"I blinked and missed a decade.",gr:"Έκλεισα τα μάτια και έχασα μια δεκαετία."},
+{en:"Gravity feels personal today.",gr:"Η βαρύτητα είναι προσωπική σήμερα."},
+{en:"I speak fluent nonsense daily.",gr:"Μιλάω άπταιστα ανοησίες."},
+{en:"My brain has too many side quests.",gr:"Ο εγκέφαλος έχει side quests."},
+{en:"Reality is optional sometimes.",gr:"Η πραγματικότητα είναι προαιρετική."},
+{en:"I confuse dreams with plans.",gr:"Μπερδεύω όνειρα με σχέδια."},
+{en:"Time travels faster without me.",gr:"Ο χρόνος ταξιδεύει πιο γρήγορα χωρίς εμένα."},
+{en:"I exist in beta testing mode.",gr:"Υπάρχω σε beta mode."},
+
+// GREEK FLAVORED (181-210)
+{en:"My souvlaki understands me better than people.",gr:"Το σουβλάκι με καταλαβαίνει καλύτερα από ανθρώπους."},
+{en:"I need coffee like Greeks need ouzo (emotionally).",gr:"Χρειάζομαι καφέ όπως οι Έλληνες ούζο (συναισθηματικά)."},
+{en:"My life is like traffic in Athens.",gr:"Η ζωή μου είναι σαν κίνηση στην Αθήνα."},
+{en:"I wait for buses that never arrive emotionally.",gr:"Περιμένω λεωφορεία που δεν έρχονται συναισθηματικά."},
+{en:"My WiFi is slower than Greek bureaucracy.",gr:"Το WiFi πιο αργό από ελληνική γραφειοκρατία."},
+{en:"I argue like I’m in a Greek tavern debate.",gr:"Καβγαδίζω σαν σε ελληνικό καφενείο."},
+{en:"My patience is like summer in Athens—short.",gr:"Η υπομονή μου είναι σαν καλοκαίρι στην Αθήνα."},
+{en:"I nap like it’s a Greek tradition.",gr:"Κοιμάμαι σαν ελληνική παράδοση."},
+{en:"My schedule is more flexible than gyro bread.",gr:"Το πρόγραμμα μου πιο flexible από πίτα γύρο."},
+{en:"I live one tzatziki away from happiness.",gr:"Είμαι ένα τζατζίκι μακριά από ευτυχία."}
+]
+
+function render(){
+const q=document.getElementById('search').value.toLowerCase()
+const feed=document.getElementById('feed')
+feed.innerHTML=''
+
+jokes.filter(j=>(lang==='gr'?j.gr:j.en).toLowerCase().includes(q))
+.forEach(j=>{
+const div=document.createElement('div')
+div.className='post'
+div.innerHTML=`<div class="text">${lang==='gr'?j.gr:j.en}</div>`
+feed.appendChild(div)
+})
+}
+
+function toggleLang(){lang=lang==='gr'?'en':'gr';render()}
+function toggleDark(){document.body.classList.toggle('dark')}
+
+render()
+</script>
+</body>
+</html>
