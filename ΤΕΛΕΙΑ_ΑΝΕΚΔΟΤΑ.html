@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ΤΕΛΕΙΑ ΑΝΕΚΔΟΤΑ</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap');
+
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      background:#fff7c7;
+      transition:.3s;
+      font-family:'Nunito',Arial,sans-serif;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    body.dark{background:#0f0f0f;color:#fff}
+
+    /* ─── FLOATING LAUGH BACKGROUND ─── */
+    #bg-emojis {
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+      overflow:hidden;
+    }
+    .laugh {
+      position:absolute;
+      font-size:2.2rem;
+      opacity:0.13;
+      animation: floatUp linear infinite;
+      user-select:none;
+    }
+    body.dark .laugh { opacity:0.18; }
+    @keyframes floatUp {
+      0%   { transform: translateY(110vh) rotate(-15deg) scale(.8); opacity:0; }
+      10%  { opacity:0.13; }
+      90%  { opacity:0.13; }
+      100% { transform: translateY(-12vh) rotate(20deg) scale(1.1); opacity:0; }
+    }
+
+    /* ─── HEADER ─── */
+    header{
+      position:sticky;top:0;
+      background:rgba(255,255,255,.82);
+      backdrop-filter:blur(14px);
+      display:flex;justify-content:space-between;align-items:center;
+      padding:14px 20px;
+      z-index:10;
+      border-bottom:2px solid #ffe082;
+      box-shadow:0 2px 18px rgba(244,180,0,.12);
+    }
+    body.dark header{background:rgba(15,15,15,.85);border-color:#333;}
+    h1{
+      color:#f4b400;
+      font-family:'Fredoka One',cursive;
+      font-size:1.7rem;
+      letter-spacing:1px;
+      text-shadow:2px 2px 0 #ffe08266;
+    }
+    body.dark h1{text-shadow:2px 2px 0 #f4b40044;}
+    .controls button{
+      margin-left:10px;padding:9px 16px;
+      border:none;border-radius:20px;cursor:pointer;
+      font-weight:900;font-family:'Nunito',Arial,sans-serif;
+      font-size:.9rem;
+      transition:.2s;
+    }
+    .controls button:hover{transform:scale(1.08);}
+    .lang{background:#ffd54f;color:#333;}
+    .darkbtn{background:#333;color:#fff;}
+    body.dark .darkbtn{background:#ffd54f;color:#333;}
+
+    /* ─── CONTAINER ─── */
+    .container{
+      max-width:900px;
+      margin:auto;padding:24px 20px;
+      position:relative;z-index:1;
+    }
+    .search-wrap {
+      position:relative;margin-bottom:18px;
+    }
+    .search-wrap::before {
+      content:"🔍";
+      position:absolute;left:14px;top:50%;transform:translateY(-50%);
+      font-size:1.1rem;
+    }
+    input{
+      width:100%;padding:13px 13px 13px 44px;
+      border-radius:30px;
+      border:2.5px solid #f4b400;
+      font-size:1rem;
+      font-family:'Nunito',Arial,sans-serif;
+      background:#fffde7;
+      outline:none;
+      transition:.2s;
+      box-shadow:0 2px 10px rgba(244,180,0,.12);
+    }
+    input:focus{border-color:#ffca28;box-shadow:0 0 0 3px rgba(244,180,0,.18);}
+    body.dark input{background:#1a1a1a;color:#fff;border-color:#444;}
+
+    /* ─── JOKE COUNT ─── */
+    .joke-count{
+      text-align:center;
+      font-size:.85rem;
+      color:#999;
+      margin-bottom:14px;
+      font-weight:700;
+    }
+
+    /* ─── POSTS ─── */
+    .post{
+      background:rgba(255,255,255,.92);
+      margin-bottom:12px;padding:16px 18px;
+      border-radius:16px;
+      border:2px solid #ffe082;
+      transition:.22s;
+      cursor:default;
+      position:relative;
+      overflow:hidden;
+    }
+    body.dark .post{background:#1e1e1e;border-color:#2e2e2e;}
+    .post:hover{
+      transform:scale(1.015) translateY(-2px);
+      border-color:#f4b400;
+      box-shadow:0 6px 24px rgba(244,180,0,.18);
+    }
+    .post::before{
+      content:'';
+      position:absolute;left:0;top:0;bottom:0;
+      width:4px;
+      background:linear-gradient(180deg,#f4b400,#ff7043);
+      border-radius:4px 0 0 4px;
+      opacity:0;
+      transition:.2s;
+    }
+    .post:hover::before{opacity:1;}
+    .text{font-size:1.05rem;line-height:1.55;font-weight:600;}
+
+    /* ─── CATEGORY BADGE ─── */
+    .cat{
+      display:inline-block;
+      font-size:.7rem;font-weight:900;
+      padding:2px 10px;border-radius:20px;
+      margin-bottom:6px;
+      letter-spacing:.5px;
+      text-transform:uppercase;
+    }
+    .cat-tech   {background:#e3f2fd;color:#1565c0;}
+    .cat-life   {background:#f3e5f5;color:#7b1fa2;}
+    .cat-moti   {background:#e8f5e9;color:#2e7d32;}
+    .cat-food   {background:#fff8e1;color:#e65100;}
+    .cat-social {background:#fce4ec;color:#c62828;}
+    .cat-absurd {background:#e0f7fa;color:#006064;}
+    .cat-gr     {background:#fff9c4;color:#827717;}
+    body.dark .cat-tech   {background:#1a2a3a;color:#90caf9;}
+    body.dark .cat-life   {background:#2a1a2e;color:#ce93d8;}
+    body.dark .cat-moti   {background:#1a2e1a;color:#a5d6a7;}
+    body.dark .cat-food   {background:#2e2010;color:#ffcc80;}
+    body.dark .cat-social {background:#2e1018;color:#f48fb1;}
+    body.dark .cat-absurd {background:#0a2022;color:#80deea;}
+    body.dark .cat-gr     {background:#2a2800;color:#fff176;}
+
+    /* no results */
+    .empty{text-align:center;padding:60px 20px;opacity:.5;font-size:1.2rem;}
+  </style>
+</head>
+<body>
+
+<!-- Floating laugh emojis background -->
+<div id="bg-emojis"></div>
+
+<header>
+  <div>
+    <h1>ΤΕΛΕΙΑ ΑΝΕΚΔΟΤΑ 😂</h1>
+    <small style="opacity:.6;font-size:.78rem;">310 jokes • social feed</small>
+  </div>
+  <div class="controls">
+    <button class="lang" onclick="toggleLang()">EN/GR</button>
+    <button class="darkbtn" onclick="toggleDark()">🌙</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="search-wrap">
+    <input id="search" placeholder="search jokes..." oninput="render()" />
+  </div>
+  <div class="joke-count" id="joke-count"></div>
+  <div id="feed"></div>
+</div>
+
+<script>
+let lang='gr';
+
+const jokes=[
+// ─── TECH (1-30) ───
+{en:"My WiFi has more mood swings than me.",gr:"Το WiFi έχει περισσότερες αλλαγές διάθεσης από εμένα.",cat:"tech"},
+{en:"My laptop fan sounds like it's judging me.",gr:"Ο ανεμιστήρας του laptop με κρίνει.",cat:"tech"},
+{en:"I clicked update and lost my will to live.",gr:"Πάτησα update και έχασα τη θέληση για ζωή.",cat:"tech"},
+{en:"My phone knows my secrets better than I do.",gr:"Το κινητό ξέρει τα μυστικά μου καλύτερα από εμένα.",cat:"tech"},
+{en:"My passwords are emotionally damaged.",gr:"Οι κωδικοί μου είναι συναισθηματικά τραυματισμένοι.",cat:"tech"},
+{en:"I open settings and forget why I exist.",gr:"Ανοίγω settings και ξεχνάω γιατί υπάρχω.",cat:"tech"},
+{en:"My browser tabs are a mental breakdown.",gr:"Τα tabs είναι ψυχολογική κατάρρευση.",cat:"tech"},
+{en:"I trust autocorrect to ruin my life.",gr:"Εμπιστεύομαι το autocorrect να καταστρέψει τη ζωή μου.",cat:"tech"},
+{en:"My phone battery drops faster than my motivation.",gr:"Η μπαταρία πέφτει πιο γρήγορα από το motivation.",cat:"tech"},
+{en:"I scroll without purpose or direction.",gr:"Κάνω scroll χωρίς σκοπό.",cat:"tech"},
+
+// ─── LIFE (31-60) ───
+{en:"My life is a series of loading screens.",gr:"Η ζωή μου είναι loading screens.",cat:"life"},
+{en:"I trip over my own thoughts.",gr:"Σκοντάφτω στις σκέψεις μου.",cat:"life"},
+{en:"My existence is slightly delayed.",gr:"Η ύπαρξή μου είναι καθυστερημένη.",cat:"life"},
+{en:"I exist in low resolution reality.",gr:"Υπάρχω σε low resolution.",cat:"life"},
+{en:"My plans expire faster than milk.",gr:"Τα σχέδιά μου λήγουν πιο γρήγορα από το γάλα.",cat:"life"},
+{en:"I lose keys and confidence equally fast.",gr:"Χάνω κλειδιά και αυτοπεποίθηση το ίδιο γρήγορα.",cat:"life"},
+{en:"Life gave me notifications but no instructions.",gr:"Η ζωή μου έδωσε notifications χωρίς οδηγίες.",cat:"life"},
+{en:"I reboot my personality daily.",gr:"Κάνω reboot στην προσωπικότητα μου καθημερινά.",cat:"life"},
+{en:"Reality feels like a glitchy simulation.",gr:"Η πραγματικότητα είναι glitchy simulation.",cat:"life"},
+{en:"I survive purely on accident.",gr:"Επιβιώνω καθαρά από τύχη.",cat:"life"},
+
+// ─── MOTIVATION (61-90) ───
+{en:"My motivation left the chat permanently.",gr:"Το motivation έφυγε μόνιμα.",cat:"moti"},
+{en:"I plan to succeed tomorrow again.",gr:"Σχεδιάζω να πετύχω αύριο πάλι.",cat:"moti"},
+{en:"I work best under imaginary pressure.",gr:"Δουλεύω καλύτερα σε φανταστική πίεση.",cat:"moti"},
+{en:"My ambition is on airplane mode.",gr:"Η φιλοδοξία είναι airplane mode.",cat:"moti"},
+{en:"I delay everything professionally.",gr:"Καθυστερώ τα πάντα επαγγελματικά.",cat:"moti"},
+{en:"My goals are still loading.",gr:"Οι στόχοι φορτώνουν ακόμα.",cat:"moti"},
+{en:"I wake up tired in advance.",gr:"Ξυπνάω κουρασμένος από πριν.",cat:"moti"},
+{en:"Success feels like a bug I can't trigger.",gr:"Η επιτυχία είναι bug.",cat:"moti"},
+{en:"I almost become productive daily.",gr:"Σχεδόν γίνομαι παραγωγικός καθημερινά.",cat:"moti"},
+{en:"My energy is permanently low battery.",gr:"Η ενέργεια είναι low battery.",cat:"moti"},
+
+// ─── FOOD (91-120) ───
+{en:"I cook like it's experimental science.",gr:"Μαγειρεύω σαν πείραμα.",cat:"food"},
+{en:"My fridge is a museum of leftovers.",gr:"Το ψυγείο είναι μουσείο leftovers.",cat:"food"},
+{en:"I eat emotionally and frequently.",gr:"Τρώω συναισθηματικά και συχνά.",cat:"food"},
+{en:"My diet is fictional.",gr:"Η δίαιτα μου είναι φανταστική.",cat:"food"},
+{en:"I open snacks like loot boxes.",gr:"Ανοίγω snacks σαν loot boxes.",cat:"food"},
+{en:"Cooking instructions are optional to me.",gr:"Οι οδηγίες μαγειρικής είναι προαιρετικές.",cat:"food"},
+{en:"I burn water sometimes.",gr:"Καίω ακόμα και το νερό.",cat:"food"},
+{en:"My kitchen is chaos theory.",gr:"Η κουζίνα είναι chaos theory.",cat:"food"},
+{en:"I snack like it's a hobby.",gr:"Τσιμπολογάω σαν hobby.",cat:"food"},
+{en:"Food tastes better at midnight.",gr:"Το φαγητό είναι καλύτερο τα μεσάνυχτα.",cat:"food"},
+
+// ─── SOCIAL (121-150) ───
+{en:"I reply mentally but not physically.",gr:"Απαντάω στο μυαλό αλλά όχι στην πραγματικότητα.",cat:"social"},
+{en:"My social battery is always empty.",gr:"Η κοινωνική μπαταρία είναι άδεια.",cat:"social"},
+{en:"I attend conversations as a background character.",gr:"Είμαι background χαρακτήρας.",cat:"social"},
+{en:"I read messages and panic later.",gr:"Διαβάζω μηνύματα και πανικοβάλλομαι μετά.",cat:"social"},
+{en:"I ghost even myself sometimes.",gr:"Ghostάρω ακόμα και τον εαυτό μου.",cat:"social"},
+{en:"My communication skills are on vacation.",gr:"Οι επικοινωνιακές μου δεξιότητες είναι διακοπές.",cat:"social"},
+{en:"I say hi and regret it instantly.",gr:"Λέω γεια και το μετανιώνω.",cat:"social"},
+{en:"Small talk drains my soul.",gr:"Το small talk μου ρουφάει την ψυχή.",cat:"social"},
+{en:"I overthink every emoji I send.",gr:"Υπεραναλύω κάθε emoji.",cat:"social"},
+{en:"I exist in read receipts only.",gr:"Υπάρχω μόνο στα read receipts.",cat:"social"},
+
+// ─── ABSURD (151-180) ───
+{en:"I argue with myself and lose.",gr:"Καβγαδίζω με τον εαυτό μου και χάνω.",cat:"absurd"},
+{en:"My shadow is more productive than me.",gr:"Η σκιά μου είναι πιο παραγωγική.",cat:"absurd"},
+{en:"I blinked and missed a decade.",gr:"Έκλεισα τα μάτια και έχασα μια δεκαετία.",cat:"absurd"},
+{en:"Gravity feels personal today.",gr:"Η βαρύτητα είναι προσωπική σήμερα.",cat:"absurd"},
+{en:"I speak fluent nonsense daily.",gr:"Μιλάω άπταιστα ανοησίες.",cat:"absurd"},
+{en:"My brain has too many side quests.",gr:"Ο εγκέφαλος έχει side quests.",cat:"absurd"},
+{en:"Reality is optional sometimes.",gr:"Η πραγματικότητα είναι προαιρετική.",cat:"absurd"},
+{en:"I confuse dreams with plans.",gr:"Μπερδεύω όνειρα με σχέδια.",cat:"absurd"},
+{en:"Time travels faster without me.",gr:"Ο χρόνος ταξιδεύει πιο γρήγορα χωρίς εμένα.",cat:"absurd"},
+{en:"I exist in beta testing mode.",gr:"Υπάρχω σε beta mode.",cat:"absurd"},
+
+// ─── GREEK FLAVORED (181-210) ───
+{en:"My souvlaki understands me better than people.",gr:"Το σουβλάκι με καταλαβαίνει καλύτερα από ανθρώπους.",cat:"gr"},
+{en:"I need coffee like Greeks need ouzo—emotionally.",gr:"Χρειάζομαι καφέ όπως οι Έλληνες ούζο—συναισθηματικά.",cat:"gr"},
+{en:"My life is like traffic in Athens.",gr:"Η ζωή μου είναι σαν κίνηση στην Αθήνα.",cat:"gr"},
+{en:"I wait for buses that never arrive—emotionally.",gr:"Περιμένω λεωφορεία που δεν έρχονται—συναισθηματικά.",cat:"gr"},
+{en:"My WiFi is slower than Greek bureaucracy.",gr:"Το WiFi πιο αργό από ελληνική γραφειοκρατία.",cat:"gr"},
+{en:"I argue like I'm in a Greek tavern debate.",gr:"Καβγαδίζω σαν σε ελληνικό καφενείο.",cat:"gr"},
+{en:"My patience is like summer in Athens—short.",gr:"Η υπομονή μου είναι σαν καλοκαίρι στην Αθήνα.",cat:"gr"},
+{en:"I nap like it's a Greek tradition.",gr:"Κοιμάμαι σαν ελληνική παράδοση.",cat:"gr"},
+{en:"My schedule is more flexible than gyro bread.",gr:"Το πρόγραμμα μου πιο flexible από πίτα γύρο.",cat:"gr"},
+{en:"I live one tzatziki away from happiness.",gr:"Είμαι ένα τζατζίκι μακριά από ευτυχία.",cat:"gr"},
+
+// ══════════════════════════════════════════════
+// ─── NEW 100 JOKES ───
+// ══════════════════════════════════════════════
+
+// ─── NEW TECH (211-235) ───
+{en:"I turned it off and on again and now I'm scared.",gr:"Το έκλεισα και άνοιξα και τώρα φοβάμαι.",cat:"tech"},
+{en:"My Bluetooth connected to someone else's regret.",gr:"Το Bluetooth μου συνδέθηκε στην τύψη κάποιου άλλου.",cat:"tech"},
+{en:"I have 47 unread emails and zero plans to read them.",gr:"Έχω 47 αδιάβαστα email και μηδέν πρόθεση να τα διαβάσω.",cat:"tech"},
+{en:"My screen time report is a horror story.",gr:"Η αναφορά screen time είναι ταινία τρόμου.",cat:"tech"},
+{en:"I downloaded an app and immediately forgot why.",gr:"Κατέβασα app και ξέχασα αμέσως γιατί.",cat:"tech"},
+{en:"My smart watch knows I'm sad before I do.",gr:"Το smartwatch ξέρει ότι είμαι λυπημένος πριν από εμένα.",cat:"tech"},
+{en:"I have 12 chargers and none of them work.",gr:"Έχω 12 φορτιστές και κανένας δεν δουλεύει.",cat:"tech"},
+{en:"I asked the AI for help and now I'm questioning existence.",gr:"Ζήτησα βοήθεια από AI και τώρα αμφισβητώ την ύπαρξη.",cat:"tech"},
+{en:"My notifications are louder than my thoughts.",gr:"Οι ειδοποιήσεις είναι πιο δυνατές από τις σκέψεις μου.",cat:"tech"},
+{en:"I lost my phone and found my soul briefly.",gr:"Έχασα το κινητό και βρήκα την ψυχή μου για λίγο.",cat:"tech"},
+{en:"My cloud storage is fuller than my fridge.",gr:"Το cloud storage είναι πιο γεμάτο από το ψυγείο.",cat:"tech"},
+{en:"I have dark mode on everything including my personality.",gr:"Έχω dark mode παντού μαζί με την προσωπικότητα μου.",cat:"tech"},
+{en:"My router blinks judgmentally.",gr:"Ο router αναβοσβήνει κριτικά.",cat:"tech"},
+{en:"I deleted the app and reinstalled it four times today.",gr:"Έσβησα το app και το ξανακατέβασα τέσσερις φορές σήμερα.",cat:"tech"},
+{en:"Tech support told me to restart my brain.",gr:"Το tech support μου είπε να κάνω restart τον εγκέφαλο.",cat:"tech"},
+{en:"My selfie camera knows too much.",gr:"Η selfie κάμερα ξέρει πάρα πολλά.",cat:"tech"},
+{en:"I have 3 GB free and it's all memes.",gr:"Έχω 3 GB ελεύθερα κι όλα είναι memes.",cat:"tech"},
+{en:"My laptop overheats with emotion.",gr:"Το laptop υπερθερμαίνεται από συναίσθημα.",cat:"tech"},
+{en:"I swiped right on a sponsored post by accident.",gr:"Κάνα swipe right σε sponsored post κατά λάθος.",cat:"tech"},
+{en:"My algorithm knows my type better than I do.",gr:"Ο αλγόριθμος ξέρει τον τύπο μου καλύτερα από εμένα.",cat:"tech"},
+{en:"I run on caffeine and expired SSL certificates.",gr:"Λειτουργώ με καφεΐνη και ληγμένα SSL certificates.",cat:"tech"},
+{en:"My inbox is a graveyard of good intentions.",gr:"Το inbox είναι νεκροταφείο καλών προθέσεων.",cat:"tech"},
+{en:"I starred an email to deal with later. That was 2021.",gr:"Το έβαλα starred για να το δω αργότερα. Ήταν 2021.",cat:"tech"},
+{en:"My phone autocorrects 'fine' to 'crying'.",gr:"Το κινητό διορθώνει 'καλά' σε 'κλαίω'.",cat:"tech"},
+{en:"I set 6 alarms and snoozed all of them with pride.",gr:"Έβαλα 6 ξυπνητήρια και τα έκλεισα όλα με υπερηφάνεια.",cat:"tech"},
+
+// ─── NEW LIFE (236-250) ───
+{en:"I made a to-do list and put 'make to-do list' on it.",gr:"Έφτιαξα λίστα και έβαλα 'φτιάξε λίστα' μέσα.",cat:"life"},
+{en:"My horoscope said be yourself—worst advice ever.",gr:"Το ζώδιό μου είπε να είμαι ο εαυτός μου—χειρότερη συμβουλή.",cat:"life"},
+{en:"I woke up on the right side of the bed. Fell off.",gr:"Σηκώθηκα από τη σωστή μεριά. Έπεσα.",cat:"life"},
+{en:"I'm not lazy, I'm energy-efficient.",gr:"Δεν είμαι τεμπέλης, είμαι ενεργειακά αποδοτικός.",cat:"life"},
+{en:"I went outside and immediately regretted it.",gr:"Βγήκα έξω και το μετάνιωσα αμέσως.",cat:"life"},
+{en:"My morning routine is: panic, shower, panic again.",gr:"Η πρωινή ρουτίνα μου: πανικός, ντους, ξαναπανικός.",cat:"life"},
+{en:"I sleep to escape responsibility.",gr:"Κοιμάμαι για να ξεφύγω από ευθύνες.",cat:"life"},
+{en:"I bought a planner and filled in zero days.",gr:"Αγόρασα ημερολόγιο και δεν έγραψα τίποτα.",cat:"life"},
+{en:"My weekend vanished and I have no alibi.",gr:"Το Σαββατοκύριακο εξαφανίστηκε και δεν έχω άλλοθι.",cat:"life"},
+{en:"I have mixed feelings and no mixer.",gr:"Έχω μικτά συναισθήματα και κανένα μίξερ.",cat:"life"},
+{en:"I stress-cleaned and now I can't find anything.",gr:"Καθάρισα από άγχος και τώρα δεν βρίσκω τίποτα.",cat:"life"},
+{en:"My dreams have better production value than my life.",gr:"Τα όνειρά μου έχουν καλύτερη παραγωγή από τη ζωή μου.",cat:"life"},
+{en:"I canceled plans to prepare for future plans I'll also cancel.",gr:"Ακύρωσα σχέδια για να προετοιμαστώ για άλλα που θα ακυρώσω.",cat:"life"},
+{en:"I operate at 11% capacity on a good day.",gr:"Λειτουργώ στο 11% δυναμικότητα σε καλή μέρα.",cat:"life"},
+{en:"I found a receipt from 2019 and cried a little.",gr:"Βρήκα απόδειξη από το 2019 και έκλαψα λίγο.",cat:"life"},
+
+// ─── NEW MOTIVATION (251-263) ───
+{en:"I visualized success and then took a nap.",gr:"Οραματίστηκα επιτυχία και μετά πήγα για ύπνο.",cat:"moti"},
+{en:"My five-year plan is just 'survive'.",gr:"Το πεντάχρονο πλάνο μου είναι απλά 'επιβίωσε'.",cat:"moti"},
+{en:"I started a new chapter and then re-read the old one.",gr:"Άρχισα νέο κεφάλαιο και μετά ξαναδιάβασα το παλιό.",cat:"moti"},
+{en:"I set a goal and immediately set a snooze.",gr:"Έβαλα στόχο και αμέσως τον ανέβαλα.",cat:"moti"},
+{en:"My hustle culture is more hush than hustle.",gr:"Η κουλτούρα hustle μου είναι πιο hush παρά hustle.",cat:"moti"},
+{en:"I'm one motivational quote away from doing nothing.",gr:"Είμαι ένα motivational quote μακριά από το να μη κάνω τίποτα.",cat:"moti"},
+{en:"I peaked in potential.",gr:"Κορύφωσα στο δυναμικό.",cat:"moti"},
+{en:"My productivity window is 11:58 PM to midnight.",gr:"Το παράθυρο παραγωγικότητας μου είναι 23:58 έως μεσάνυχτα.",cat:"moti"},
+{en:"I signed up for a gym and that counts, right?",gr:"Εγγράφηκα σε γυμναστήριο κι αυτό μετράει, σωστά;",cat:"moti"},
+{en:"I level up in games because I can't in real life.",gr:"Ανεβαίνω level σε παιχνίδια γιατί δεν μπορώ στη ζωή.",cat:"moti"},
+{en:"My vision board is just screenshots I never revisit.",gr:"Το vision board μου είναι screenshots που δεν ξαναβλέπω.",cat:"moti"},
+{en:"I thrive under pressure I create myself.",gr:"Ακμάζω υπό πίεση που φτιάχνω μόνος μου.",cat:"moti"},
+{en:"My self-improvement is pending approval.",gr:"Η αυτοβελτίωση μου εκκρεμεί έγκριση.",cat:"moti"},
+
+// ─── NEW FOOD (264-275) ───
+{en:"I meal prep by ordering extra delivery.",gr:"Ετοιμάζω γεύματα παραγγέλνοντας επιπλέον delivery.",cat:"food"},
+{en:"My fruit bowl is purely decorative.",gr:"Το μπολ με φρούτα είναι αμιγώς διακοσμητικό.",cat:"food"},
+{en:"I eat salad only when it's under a burger.",gr:"Τρώω σαλάτα μόνο όταν είναι κάτω από burger.",cat:"food"},
+{en:"My portion control is theoretical.",gr:"Ο έλεγχος μερίδας είναι θεωρητικός.",cat:"food"},
+{en:"I put spicy sauce on my regrets too.",gr:"Βάζω καυτερή σάλτσα και στις τύψεις μου.",cat:"food"},
+{en:"I treat bread like a love language.",gr:"Αντιμετωπίζω το ψωμί σαν γλώσσα αγάπης.",cat:"food"},
+{en:"My grocery list says salad. My cart says chips.",gr:"Η λίστα λέει σαλάτα. Το καρότσι λέει τσιπς.",cat:"food"},
+{en:"I ordered dessert first as a coping strategy.",gr:"Παρήγγειλα επιδόρπιο πρώτα ως στρατηγική αντιμετώπισης.",cat:"food"},
+{en:"I call it fusion cuisine. Others call it a mistake.",gr:"Το λέω fusion cuisine. Οι άλλοι το λένε λάθος.",cat:"food"},
+{en:"My comfort food and I are in a serious relationship.",gr:"Το comfort food κι εγώ είμαστε σε σοβαρή σχέση.",cat:"food"},
+{en:"I read menus like novels, order the same thing every time.",gr:"Διαβάζω μενού σαν μυθιστόρημα, παραγγέλνω το ίδιο κάθε φορά.",cat:"food"},
+{en:"I added 'balanced diet' to my wishlist.",gr:"Πρόσθεσα 'ισορροπημένη διατροφή' στα wishlist.",cat:"food"},
+
+// ─── NEW SOCIAL (276-288) ───
+{en:"I show up late and call it fashionable.",gr:"Αργώ και το λέω στυλάτο.",cat:"social"},
+{en:"I text 'I'm on my way' from my bed.",gr:"Στέλνω 'είμαι στο δρόμο' από το κρεβάτι.",cat:"social"},
+{en:"I laugh at memes in silence to avoid social contact.",gr:"Γελάω με memes σιωπηλά για να αποφύγω επαφή.",cat:"social"},
+{en:"My small talk is just weather plus silence.",gr:"Το small talk μου είναι καιρός συν σιωπή.",cat:"social"},
+{en:"I type 'haha' instead of showing actual emotion.",gr:"Γράφω 'χαχα' αντί να δείξω πραγματικό συναίσθημα.",cat:"social"},
+{en:"I RSVP 'maybe' as a lifestyle.",gr:"Απαντάω 'ίσως' σε εκδηλώσεις ως τρόπο ζωής.",cat:"social"},
+{en:"I wave back at someone waving at someone else.",gr:"Χαιρέτησα κάποιον που χαιρετούσε άλλον.",cat:"social"},
+{en:"I rehearse conversations that never happen.",gr:"Κάνω πρόβα συνομιλίες που δεν γίνονται ποτέ.",cat:"social"},
+{en:"My eye contact duration is clinically awkward.",gr:"Η διάρκεια οπτικής επαφής μου είναι κλινικά άβολη.",cat:"social"},
+{en:"I apologize to furniture I bump into.",gr:"Ζητάω συγγνώμη στα έπιπλα που χτυπάω.",cat:"social"},
+{en:"I explain the joke and then apologize for explaining.",gr:"Εξηγώ το αστείο και μετά ζητάω συγγνώμη που εξήγησα.",cat:"social"},
+{en:"My social anxiety has its own social anxiety.",gr:"Η κοινωνική αγχώδης έχει δική της κοινωνική αγχώδη.",cat:"social"},
+{en:"I send voice notes at 2 AM and regret it at 2:01 AM.",gr:"Στέλνω φωνητικά μηνύματα στις 2 π.μ. και μετανιώνω στις 2:01.",cat:"social"},
+
+// ─── NEW ABSURD (289-299) ───
+{en:"I tried to think outside the box but got stuck in the lid.",gr:"Προσπάθησα να σκεφτώ έξω από το κουτί αλλά κόλλησα στο καπάκι.",cat:"absurd"},
+{en:"My train of thought derailed at the first station.",gr:"Το τρένο σκέψεων μου εκτροχιάστηκε στον πρώτο σταθμό.",cat:"absurd"},
+{en:"I have strong opinions about things that don't exist.",gr:"Έχω έντονες απόψεις για πράγματα που δεν υπάρχουν.",cat:"absurd"},
+{en:"My inner monologue has terrible ratings.",gr:"Ο εσωτερικός μονόλογος έχει τρομερές αξιολογήσεις.",cat:"absurd"},
+{en:"I counted sheep and now they unionized.",gr:"Μέτρησα πρόβατα και τώρα έχουν σωματείο.",cat:"absurd"},
+{en:"My imagination has a better life than I do.",gr:"Η φαντασία μου έχει καλύτερη ζωή από εμένα.",cat:"absurd"},
+{en:"I lost a staring contest with a houseplant.",gr:"Έχασα διαγωνισμό βλέμματος με φυτό εσωτερικού χώρου.",cat:"absurd"},
+{en:"My subconscious filed a noise complaint about my thoughts.",gr:"Το υποσυνείδητο κατέθεσε καταγγελία θορύβου για τις σκέψεις μου.",cat:"absurd"},
+{en:"I tried mindfulness and found more things to worry about.",gr:"Δοκίμασα mindfulness και βρήκα περισσότερα πράγματα να ανησυχώ.",cat:"absurd"},
+{en:"My attention span is shorter than this joke.",gr:"Η προσοχή μου είναι πιο κοντή από αυτό το αστείο.",cat:"absurd"},
+{en:"I manifested chaos and it delivered instantly.",gr:"Εκδήλωσα χάος και παραδόθηκε αμέσως.",cat:"absurd"},
+
+// ─── NEW GREEK (300-310) ───
+{en:"I discuss football tactics I don't understand at the kafeneio.",gr:"Συζητάω τακτικές ποδοσφαίρου που δεν καταλαβαίνω στο καφενείο.",cat:"gr"},
+{en:"My yiayia's opinion overrides all my life decisions.",gr:"Η γνώμη της γιαγιάς παρακάμπτει όλες τις αποφάσεις ζωής μου.",cat:"gr"},
+{en:"I mainline Greek coffee like it's a personality.",gr:"Πίνω ελληνικό καφέ ενδοφλεβίως σαν να είναι προσωπικότητα.",cat:"gr"},
+{en:"My plans start at 11 PM like a proper Greek.",gr:"Τα σχέδιά μου ξεκινούν στις 11 μ.μ. σαν σωστός Έλληνας.",cat:"gr"},
+{en:"I named every parking spot I've ever illegally used.",gr:"Έδωσα όνομα σε κάθε παράνομη θέση πάρκινγκ που χρησιμοποίησα.",cat:"gr"},
+{en:"Siesta is not laziness, it's cultural heritage.",gr:"Ο μεσημεριανός ύπνος δεν είναι τεμπελιά, είναι πολιτιστική κληρονομιά.",cat:"gr"},
+{en:"My stubbornness has a Greek certification.",gr:"Η πεισματαριά μου έχει ελληνική πιστοποίηση.",cat:"gr"},
+{en:"I negotiate prices everywhere including the supermarket.",gr:"Παζαρεύω τιμές παντού, ακόμα και στο σούπερ μάρκετ.",cat:"gr"},
+{en:"I greet everyone for 20 minutes before the actual conversation.",gr:"Χαιρετάω επί 20 λεπτά πριν αρχίσει η πραγματική συζήτηση.",cat:"gr"},
+{en:"My family tree has more drama than a Greek tragedy.",gr:"Το οικογενειακό μου δέντρο έχει περισσότερο δράμα από ελληνική τραγωδία.",cat:"gr"},
+{en:"I add olive oil to everything, including problems.",gr:"Βάζω ελαιόλαδο σε όλα, συμπεριλαμβανομένων των προβλημάτων.",cat:"gr"},
+];
+
+const catLabels={
+  tech:"💻 Tech",
+  life:"🌀 Life",
+  moti:"🚀 Motivation",
+  food:"🍕 Food",
+  social:"👥 Social",
+  absurd:"🌀 Absurd",
+  gr:"🇬🇷 Greek"
+};
+const catClass={
+  tech:"cat-tech",life:"cat-life",moti:"cat-moti",food:"cat-food",social:"cat-social",absurd:"cat-absurd",gr:"cat-gr"
+};
+
+function render(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const feed=document.getElementById('feed');
+  const countEl=document.getElementById('joke-count');
+  feed.innerHTML='';
+
+  const filtered=jokes.filter(j=>(lang==='gr'?j.gr:j.en).toLowerCase().includes(q));
+  countEl.textContent=filtered.length+' jokes';
+
+  if(filtered.length===0){
+    feed.innerHTML='<div class="empty">😢 No jokes found...</div>';
+    return;
+  }
+
+  filtered.forEach((j,i)=>{
+    const div=document.createElement('div');
+    div.className='post';
+    div.style.animationDelay=(i*0.02)+'s';
+    const catBadge=j.cat?`<span class="cat ${catClass[j.cat]||''}">${catLabels[j.cat]||j.cat}</span>`:'';
+    div.innerHTML=`${catBadge}<div class="text">${lang==='gr'?j.gr:j.en}</div>`;
+    feed.appendChild(div);
+  });
+}
+
+function toggleLang(){lang=lang==='gr'?'en':'gr';render();}
+function toggleDark(){document.body.classList.toggle('dark');}
+
+// ─── FLOATING LAUGH BACKGROUND ───
+const laughEmojis=['😂','🤣','😆','😄','🤭','😝','😜','🥲','💀','😹','🤪','😅','😁'];
+const bg=document.getElementById('bg-emojis');
+
+function spawnLaugh(){
+  const el=document.createElement('span');
+  el.className='laugh';
+  el.textContent=laughEmojis[Math.floor(Math.random()*laughEmojis.length)];
+  const size=1.2+Math.random()*2.2;
+  el.style.fontSize=size+'rem';
+  el.style.left=(Math.random()*100)+'%';
+  const dur=8+Math.random()*14;
+  el.style.animationDuration=dur+'s';
+  el.style.animationDelay=(Math.random()*6)+'s';
+  bg.appendChild(el);
+  setTimeout(()=>el.remove(),(dur+6)*1000);
+}
+
+// Spawn initial batch
+for(let i=0;i<30;i++) spawnLaugh();
+// Keep spawning
+setInterval(spawnLaugh,600);
+
+render();
+</script>
+</body>
+</html>
