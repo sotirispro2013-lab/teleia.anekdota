@@ -1,149 +1,874 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ΤΕΛΕΙΑ ΑΝΕΚΔΟΤΑ</title>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-    body{background:#fff7c7;transition:.3s}
-    body.dark{background:#0f0f0f;color:#fff}
-    header{position:sticky;top:0;background:rgba(255,255,255,.8);backdrop-filter:blur(10px);display:flex;justify-content:space-between;padding:16px;z-index:10}
-    body.dark header{background:rgba(0,0,0,.7)}
-    h1{color:#f4b400}
-    .controls button{margin-left:10px;padding:10px;border:none;border-radius:10px;cursor:pointer;font-weight:bold}
-    .lang{background:#ffd54f}
-    .darkbtn{background:#333;color:#fff}
-    .container{max-width:900px;margin:auto;padding:20px}
-    .post{background:rgba(255,255,255,.9);margin-bottom:14px;padding:14px;border-radius:14px;border:2px solid #ffe082;transition:.2s}
-    body.dark .post{background:#1e1e1e;border-color:#333}
-    .post:hover{transform:scale(1.01)}
-    .text{margin-top:4px}
-    input{width:100%;padding:12px;margin:10px 0;border-radius:10px;border:2px solid #f4b400}
-  </style>
-</head>
-<body>
-<header>
-  <div>
-    <h1>ΤΕΛΕΙΑ ΑΝΕΚΔΟΤΑ 😂</h1>
-    <small>social feed jokes</small>
-  </div>
-  <div class="controls">
-    <button class="lang" onclick="toggleLang()">EN/GR</button>
-    <button class="darkbtn" onclick="toggleDark()">🌙</button>
-  </div>
-</header>
-<div class="container">
-  <input id="search" placeholder="search jokes..." oninput="render()" />
-  <div id="feed"></div>
-</div>
-<script>
-let lang='gr'
-
-const jokes=[
-// TECH (1-30)
-{en:"My WiFi has more mood swings than me.",gr:"Το WiFi έχει περισσότερες αλλαγές διάθεσης από εμένα."},
-{en:"My laptop fan sounds like it’s judging me.",gr:"Ο ανεμιστήρας του laptop με κρίνει."},
-{en:"I clicked update and lost my will to live.",gr:"Πάτησα update και έχασα τη θέληση για ζωή."},
-{en:"My phone knows my secrets better than I do.",gr:"Το κινητό ξέρει τα μυστικά μου καλύτερα από εμένα."},
-{en:"My passwords are emotionally damaged.",gr:"Οι κωδικοί μου είναι συναισθηματικά τραυματισμένοι."},
-{en:"I open settings and forget why I exist.",gr:"Ανοίγω settings και ξεχνάω γιατί υπάρχω."},
-{en:"My browser tabs are a mental breakdown.",gr:"Τα tabs είναι ψυχολογική κατάρρευση."},
-{en:"I trust autocorrect to ruin my life.",gr:"Εμπιστεύομαι το autocorrect να καταστρέψει τη ζωή μου."},
-{en:"My phone battery drops faster than my motivation.",gr:"Η μπαταρία πέφτει πιο γρήγορα από το motivation."},
-{en:"I scroll without purpose or direction.",gr:"Κάνω scroll χωρίς σκοπό."},
-
-// LIFE (31-60)
-{en:"My life is a series of loading screens.",gr:"Η ζωή μου είναι loading screens."},
-{en:"I trip over my own thoughts.",gr:"Σκοντάφτω στις σκέψεις μου."},
-{en:"My existence is slightly delayed.",gr:"Η ύπαρξή μου είναι καθυστερημένη."},
-{en:"I exist in low resolution reality.",gr:"Υπάρχω σε low resolution."},
-{en:"My plans expire faster than milk.",gr:"Τα σχέδιά μου λήγουν πιο γρήγορα από το γάλα."},
-{en:"I lose keys and confidence equally fast.",gr:"Χάνω κλειδιά και αυτοπεποίθηση το ίδιο γρήγορα."},
-{en:"Life gave me notifications but no instructions.",gr:"Η ζωή μου έδωσε notifications χωρίς οδηγίες."},
-{en:"I reboot my personality daily.",gr:"Κάνω reboot στην προσωπικότητα μου καθημερινά."},
-{en:"Reality feels like a glitchy simulation.",gr:"Η πραγματικότητα είναι glitchy simulation."},
-{en:"I survive purely on accident.",gr:"Επιβιώνω καθαρά από τύχη."},
-
-// MOTIVATION (61-90)
-{en:"My motivation left the chat permanently.",gr:"Το motivation έφυγε μόνιμα."},
-{en:"I plan to succeed tomorrow again.",gr:"Σχεδιάζω να πετύχω αύριο πάλι."},
-{en:"I work best under imaginary pressure.",gr:"Δουλεύω καλύτερα σε φανταστική πίεση."},
-{en:"My ambition is on airplane mode.",gr:"Η φιλοδοξία είναι airplane mode."},
-{en:"I delay everything professionally.",gr:"Καθυστερώ τα πάντα επαγγελματικά."},
-{en:"My goals are still loading.",gr:"Οι στόχοι φορτώνουν ακόμα."},
-{en:"I wake up tired in advance.",gr:"Ξυπνάω κουρασμένος από πριν."},
-{en:"Success feels like a bug I can’t trigger.",gr:"Η επιτυχία είναι bug."},
-{en:"I almost become productive daily.",gr:"Σχεδόν γίνομαι παραγωγικός καθημερινά."},
-{en:"My energy is permanently low battery.",gr:"Η ενέργεια είναι low battery."},
-
-// FOOD (91-120)
-{en:"I cook like it's experimental science.",gr:"Μαγειρεύω σαν πείραμα."},
-{en:"My fridge is a museum of leftovers.",gr:"Το ψυγείο είναι μουσείο leftovers."},
-{en:"I eat emotionally and frequently.",gr:"Τρώω συναισθηματικά και συχνά."},
-{en:"My diet is fictional.",gr:"Η δίαιτα μου είναι φανταστική."},
-{en:"I open snacks like loot boxes.",gr:"Ανοίγω snacks σαν loot boxes."},
-{en:"Cooking instructions are optional to me.",gr:"Οι οδηγίες μαγειρικής είναι προαιρετικές."},
-{en:"I burn water sometimes.",gr:"Καίω ακόμα και το νερό."},
-{en:"My kitchen is chaos theory.",gr:"Η κουζίνα είναι chaos theory."},
-{en:"I snack like it's a hobby.",gr:"Τσιμπολογάω σαν hobby."},
-{en:"Food tastes better at midnight.",gr:"Το φαγητό είναι καλύτερο τα μεσάνυχτα."},
-
-// SOCIAL (121-150)
-{en:"I reply mentally but not physically.",gr:"Απαντάω στο μυαλό αλλά όχι στην πραγματικότητα."},
-{en:"My social battery is always empty.",gr:"Η κοινωνική μπαταρία είναι άδεια."},
-{en:"I attend conversations as a background character.",gr:"Είμαι background χαρακτήρας."},
-{en:"I read messages and panic later.",gr:"Διαβάζω μηνύματα και πανικοβάλλομαι μετά."},
-{en:"I ghost even myself sometimes.",gr:"Ghostάρω ακόμα και τον εαυτό μου."},
-{en:"My communication skills are on vacation.",gr:"Οι επικοινωνιακές μου δεξιότητες είναι διακοπές."},
-{en:"I say hi and regret it instantly.",gr:"Λέω γεια και το μετανιώνω."},
-{en:"Small talk drains my soul.",gr:"Το small talk μου ρουφάει την ψυχή."},
-{en:"I overthink every emoji I send.",gr:"Υπεραναλύω κάθε emoji."},
-{en:"I exist in read receipts only.",gr:"Υπάρχω μόνο στα read receipts."},
-
-// ABSURD (151-180)
-{en:"I argue with myself and lose.",gr:"Καβγαδίζω με τον εαυτό μου και χάνω."},
-{en:"My shadow is more productive than me.",gr:"Η σκιά μου είναι πιο παραγωγική."},
-{en:"I blinked and missed a decade.",gr:"Έκλεισα τα μάτια και έχασα μια δεκαετία."},
-{en:"Gravity feels personal today.",gr:"Η βαρύτητα είναι προσωπική σήμερα."},
-{en:"I speak fluent nonsense daily.",gr:"Μιλάω άπταιστα ανοησίες."},
-{en:"My brain has too many side quests.",gr:"Ο εγκέφαλος έχει side quests."},
-{en:"Reality is optional sometimes.",gr:"Η πραγματικότητα είναι προαιρετική."},
-{en:"I confuse dreams with plans.",gr:"Μπερδεύω όνειρα με σχέδια."},
-{en:"Time travels faster without me.",gr:"Ο χρόνος ταξιδεύει πιο γρήγορα χωρίς εμένα."},
-{en:"I exist in beta testing mode.",gr:"Υπάρχω σε beta mode."},
-
-// GREEK FLAVORED (181-210)
-{en:"My souvlaki understands me better than people.",gr:"Το σουβλάκι με καταλαβαίνει καλύτερα από ανθρώπους."},
-{en:"I need coffee like Greeks need ouzo (emotionally).",gr:"Χρειάζομαι καφέ όπως οι Έλληνες ούζο (συναισθηματικά)."},
-{en:"My life is like traffic in Athens.",gr:"Η ζωή μου είναι σαν κίνηση στην Αθήνα."},
-{en:"I wait for buses that never arrive emotionally.",gr:"Περιμένω λεωφορεία που δεν έρχονται συναισθηματικά."},
-{en:"My WiFi is slower than Greek bureaucracy.",gr:"Το WiFi πιο αργό από ελληνική γραφειοκρατία."},
-{en:"I argue like I’m in a Greek tavern debate.",gr:"Καβγαδίζω σαν σε ελληνικό καφενείο."},
-{en:"My patience is like summer in Athens—short.",gr:"Η υπομονή μου είναι σαν καλοκαίρι στην Αθήνα."},
-{en:"I nap like it’s a Greek tradition.",gr:"Κοιμάμαι σαν ελληνική παράδοση."},
-{en:"My schedule is more flexible than gyro bread.",gr:"Το πρόγραμμα μου πιο flexible από πίτα γύρο."},
-{en:"I live one tzatziki away from happiness.",gr:"Είμαι ένα τζατζίκι μακριά από ευτυχία."}
-]
-
-function render(){
-const q=document.getElementById('search').value.toLowerCase()
-const feed=document.getElementById('feed')
-feed.innerHTML=''
-
-jokes.filter(j=>(lang==='gr'?j.gr:j.en).toLowerCase().includes(q))
-.forEach(j=>{
-const div=document.createElement('div')
-div.className='post'
-div.innerHTML=`<div class="text">${lang==='gr'?j.gr:j.en}</div>`
-feed.appendChild(div)
-})
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Τελεια Ανεκδοτα</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #07080a;
+  --bg1:      #0d0f12;
+  --bg2:      #12141a;
+  --gold:     #e8c96d;
+  --gold2:    #f5dfa0;
+  --gold-dim: rgba(232,201,109,.08);
+  --gold-glow:rgba(232,201,109,.18);
+  --red:      #e85d5d;
+  --teal:     #5dcfcf;
+  --t1:       #f0ece4;
+  --t2:       #8a8070;
+  --t3:       #3a3630;
+  --line:     rgba(232,201,109,.1);
+  --line2:    rgba(232,201,109,.2);
 }
 
-function toggleLang(){lang=lang==='gr'?'en':'gr';render()}
-function toggleDark(){document.body.classList.toggle('dark')}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
 
-render()
+body {
+  background:var(--bg);
+  color:var(--t1);
+  font-family:'Syne',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  cursor:default;
+}
+
+/* ── GRAIN OVERLAY ── */
+body::before {
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity:.028;
+  pointer-events:none;
+  z-index:9999;
+}
+
+/* ── SPOTLIGHT BG ── */
+.spotlight {
+  position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+}
+.spotlight::before {
+  content:'';
+  position:absolute;
+  top:-30%;left:50%;transform:translateX(-50%);
+  width:700px;height:700px;
+  background:radial-gradient(ellipse at center, rgba(232,201,109,.07) 0%, transparent 70%);
+  animation:breathe 8s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%,100%{transform:translateX(-50%) scale(1);opacity:.7}
+  50%{transform:translateX(-50%) scale(1.15);opacity:1}
+}
+
+/* ── FLOATING PARTICLES ── */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.p{
+  position:absolute;
+  font-size:1.1rem;
+  opacity:0;
+  animation:rise linear infinite;
+  user-select:none;
+  filter:blur(.5px);
+}
+@keyframes rise {
+  0%  {transform:translateY(105vh) rotate(-10deg);opacity:0}
+  8%  {opacity:.12}
+  92% {opacity:.12}
+  100%{transform:translateY(-8vh) rotate(12deg);opacity:0}
+}
+
+/* ── HEADER ── */
+header {
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 36px;
+  background:linear-gradient(to bottom,rgba(7,8,10,.98) 0%,rgba(7,8,10,.92) 100%);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--line);
+}
+.logo {
+  display:flex;flex-direction:column;gap:1px;
+}
+.logo-title {
+  font-family:'Playfair Display',serif;
+  font-size:1.35rem;
+  font-weight:900;
+  color:var(--gold);
+  letter-spacing:.5px;
+  line-height:1;
+}
+.logo-sub {
+  font-family:'DM Mono',monospace;
+  font-size:.6rem;
+  color:var(--t3);
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+.header-actions{display:flex;align-items:center;gap:10px}
+
+.pill-btn {
+  background:transparent;
+  border:1px solid var(--t3);
+  color:var(--t2);
+  padding:7px 16px;
+  border-radius:100px;
+  cursor:pointer;
+  font-family:'Syne',sans-serif;
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  transition:all .2s;
+}
+.pill-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.pill-btn.active{border-color:var(--gold);color:#000;background:var(--gold)}
+
+.shuffle-btn {
+  background:transparent;
+  border:1px solid var(--t3);
+  color:var(--t2);
+  width:36px;height:36px;
+  border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;transition:all .22s;
+}
+.shuffle-btn:hover{border-color:var(--teal);color:var(--teal);background:rgba(93,207,207,.08);transform:rotate(30deg)}
+
+/* ── HERO ── */
+.hero {
+  position:relative;z-index:2;
+  text-align:center;
+  padding:64px 20px 48px;
+  overflow:hidden;
+}
+.hero-eyebrow {
+  font-family:'DM Mono',monospace;
+  font-size:.65rem;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--gold);
+  opacity:.7;
+  margin-bottom:16px;
+}
+.hero-title {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.8rem,8vw,6rem);
+  font-weight:900;
+  line-height:1;
+  color:var(--t1);
+  margin-bottom:8px;
+  position:relative;
+}
+.hero-title em {
+  font-style:italic;
+  color:var(--gold);
+  position:relative;
+}
+.hero-title em::after {
+  content:'';
+  position:absolute;left:0;bottom:-4px;width:100%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.hero-count {
+  font-family:'DM Mono',monospace;
+  font-size:.75rem;
+  color:var(--t3);
+  letter-spacing:.1em;
+  margin-top:20px;
+}
+.hero-count span {
+  color:var(--gold);
+  font-weight:500;
+}
+
+/* ── SEARCH ── */
+.search-section{
+  position:relative;z-index:2;
+  max-width:600px;margin:0 auto;
+  padding:0 24px 40px;
+}
+.search-outer {
+  position:relative;
+}
+.search-icon {
+  position:absolute;left:18px;top:50%;transform:translateY(-50%);
+  color:var(--t3);font-size:.9rem;pointer-events:none;
+}
+#search {
+  width:100%;
+  background:var(--bg1);
+  border:1px solid var(--line2);
+  border-radius:100px;
+  color:var(--t1);
+  font-family:'Syne',sans-serif;
+  font-size:.9rem;
+  padding:14px 20px 14px 48px;
+  outline:none;
+  transition:border-color .25s, box-shadow .25s;
+  letter-spacing:.02em;
+}
+#search::placeholder{color:var(--t3)}
+#search:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px var(--gold-dim), 0 0 24px var(--gold-glow);
+}
+
+/* ── FILTER CHIPS ── */
+.chips {
+  display:flex;flex-wrap:wrap;gap:8px;
+  max-width:680px;margin:0 auto 32px;
+  padding:0 24px;
+  position:relative;z-index:2;
+  justify-content:center;
+}
+.chip {
+  background:transparent;
+  border:1px solid var(--t3);
+  color:var(--t2);
+  padding:5px 14px;
+  border-radius:100px;
+  cursor:pointer;
+  font-family:'DM Mono',monospace;
+  font-size:.62rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  transition:all .18s;
+  white-space:nowrap;
+}
+.chip:hover{border-color:var(--gold);color:var(--gold)}
+.chip.on{border-color:var(--gold);color:#000;background:var(--gold)}
+
+/* ── DIVIDER ── */
+.divider {
+  display:flex;align-items:center;gap:16px;
+  max-width:680px;margin:0 auto 8px;
+  padding:0 24px;
+  position:relative;z-index:2;
+}
+.div-line{flex:1;height:1px;background:var(--line)}
+.div-label {
+  font-family:'DM Mono',monospace;
+  font-size:.6rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--t3);
+  white-space:nowrap;
+}
+
+/* ── FEED ── */
+#feed {
+  max-width:680px;margin:0 auto;
+  padding:8px 24px 80px;
+  position:relative;z-index:2;
+}
+
+.joke-card {
+  position:relative;
+  display:flex;align-items:flex-start;gap:20px;
+  padding:20px 0;
+  border-bottom:1px solid var(--line);
+  animation:slideIn .3s ease both;
+  transition:background .2s;
+  border-radius:2px;
+}
+.joke-card:first-child{border-top:1px solid var(--line)}
+@keyframes slideIn{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.joke-num {
+  font-family:'DM Mono',monospace;
+  font-size:.65rem;
+  color:var(--t3);
+  letter-spacing:.05em;
+  min-width:28px;
+  padding-top:3px;
+  flex-shrink:0;
+  transition:color .2s;
+}
+.joke-card:hover .joke-num{color:var(--gold);opacity:.6}
+
+.joke-body{flex:1;min-width:0}
+
+.joke-cat-tag {
+  display:inline-block;
+  font-family:'DM Mono',monospace;
+  font-size:.55rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--t3);
+  margin-bottom:7px;
+}
+
+.joke-text {
+  font-family:'Playfair Display',serif;
+  font-size:1.05rem;
+  font-style:italic;
+  line-height:1.7;
+  color:var(--t1);
+  transition:color .2s;
+}
+.joke-card:hover .joke-text{color:var(--gold2)}
+
+.joke-actions {
+  display:flex;align-items:center;gap:6px;
+  margin-top:10px;
+}
+.react-btn {
+  background:transparent;border:none;
+  font-size:.85rem;cursor:pointer;
+  padding:3px 8px;border-radius:100px;
+  transition:all .15s;
+  display:flex;align-items:center;gap:4px;
+  font-family:'DM Mono',monospace;font-size:.6rem;
+  color:var(--t3);
+  border:1px solid transparent;
+}
+.react-btn:hover{background:var(--gold-dim);border-color:var(--line2)}
+
+/* ── SPOTLIGHT JOKE ── */
+.spotlight-card {
+  position:relative;z-index:2;
+  max-width:680px;margin:0 auto 32px;
+  padding:0 24px;
+}
+.spotlight-inner {
+  background:var(--bg1);
+  border:1px solid var(--line2);
+  border-radius:12px;
+  padding:28px 32px;
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  transition:border-color .25s, box-shadow .25s;
+}
+.spotlight-inner:hover {
+  border-color:var(--gold);
+  box-shadow:0 0 40px var(--gold-glow);
+}
+.spotlight-inner::before {
+  content:'"';
+  position:absolute;top:-20px;left:16px;
+  font-family:'Playfair Display',serif;
+  font-size:9rem;
+  color:var(--gold);
+  opacity:.06;
+  line-height:1;
+  pointer-events:none;
+}
+.spotlight-label {
+  font-family:'DM Mono',monospace;
+  font-size:.58rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--gold);
+  opacity:.6;
+  margin-bottom:10px;
+}
+.spotlight-text {
+  font-family:'Playfair Display',serif;
+  font-size:1.3rem;
+  font-style:italic;
+  line-height:1.65;
+  color:var(--t1);
+}
+.spotlight-hint {
+  font-family:'DM Mono',monospace;
+  font-size:.58rem;
+  color:var(--t3);
+  margin-top:14px;
+  letter-spacing:.1em;
+}
+
+/* ── EMPTY ── */
+.empty-state{
+  text-align:center;padding:80px 20px;
+  font-family:'DM Mono',monospace;
+  font-size:.7rem;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--t3);
+}
+
+/* ── MEMBERS PANEL ── */
+.panel-backdrop {
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.7);
+  z-index:500;
+  backdrop-filter:blur(4px);
+  animation:fadeB .2s ease;
+}
+.panel-backdrop.open{display:flex;align-items:flex-end;justify-content:center}
+@keyframes fadeB{from{opacity:0}to{opacity:1}}
+.panel {
+  background:var(--bg1);
+  border:1px solid var(--line2);
+  border-radius:16px 16px 0 0;
+  width:100%;max-width:680px;
+  max-height:70vh;
+  overflow-y:auto;
+  padding:32px 28px 40px;
+  animation:slideUp .3s ease;
+}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.panel-handle {
+  width:36px;height:3px;
+  background:var(--t3);border-radius:2px;
+  margin:0 auto 24px;
+}
+.panel-title {
+  font-family:'Playfair Display',serif;
+  font-size:1.4rem;font-style:italic;
+  color:var(--gold);margin-bottom:20px;
+}
+.panel-empty {
+  font-family:'DM Mono',monospace;
+  font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--t3);padding:40px 0;text-align:center;line-height:2.2;
+}
+
+/* ── TOAST ── */
+.toast {
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--bg2);border:1px solid var(--gold);
+  color:var(--gold);
+  font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;
+  padding:10px 22px;border-radius:100px;
+  opacity:0;pointer-events:none;transition:all .3s;
+  z-index:9000;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── FOOTER ── */
+footer {
+  border-top:1px solid var(--line);
+  padding:20px 28px;
+  display:flex;justify-content:space-between;align-items:center;
+  position:relative;z-index:2;
+}
+.footer-left {
+  font-family:'DM Mono',monospace;
+  font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);
+}
+.footer-right {
+  font-family:'DM Mono',monospace;
+  font-size:.58rem;color:var(--t3);letter-spacing:.08em;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--t3);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  header{padding:14px 20px}
+  .logo-title{font-size:1.1rem}
+  .hero{padding:40px 16px 32px}
+  #feed,.search-section,.chips,.spotlight-card,.divider{padding-left:16px;padding-right:16px}
+  .spotlight-inner{padding:20px}
+}
+</style>
+</head>
+<body>
+
+<div class="spotlight"></div>
+<div id="particles"></div>
+
+<header>
+  <div class="logo">
+    <div class="logo-title">Τελεια Ανεκδοτα</div>
+    <div class="logo-sub">Curated · <span id="totalCount">—</span> jokes</div>
+  </div>
+  <div class="header-actions">
+    <button class="shuffle-btn" onclick="shuffleJokes()" title="Shuffle">⇄</button>
+    <button class="pill-btn" id="langBtn" onclick="toggleLang()">EN / GR</button>
+    <button class="pill-btn" onclick="openPanel()">Members</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-eyebrow">The Definitive Greek Joke Collection</div>
+  <h1 class="hero-title">Γέλιο<br><em>on demand</em></h1>
+  <div class="hero-count" id="heroCount">Loading…</div>
+</section>
+
+<!-- Spotlight random joke -->
+<div class="spotlight-card">
+  <div class="spotlight-inner" onclick="newSpotlight()" title="Click for a new one">
+    <div class="spotlight-label">✦ Tonight's Feature</div>
+    <div class="spotlight-text" id="spotlightText">—</div>
+    <div class="spotlight-hint">click for a new one</div>
+  </div>
+</div>
+
+<section class="search-section">
+  <div class="search-outer">
+    <span class="search-icon">⌕</span>
+    <input id="search" placeholder="Search jokes…" oninput="renderFeed()" autocomplete="off"/>
+  </div>
+</section>
+
+<div class="chips" id="chips"></div>
+
+<div class="divider">
+  <div class="div-line"></div>
+  <div class="div-label" id="countLabel">— entries</div>
+  <div class="div-line"></div>
+</div>
+
+<div id="feed"></div>
+
+<footer>
+  <div class="footer-left">Τελεια Ανεκδοτα &mdash; All rights reserved</div>
+  <div class="footer-right" id="footerLang">GR mode</div>
+</footer>
+
+<!-- Members panel -->
+<div class="panel-backdrop" id="panelBackdrop" onclick="closePanel()">
+  <div class="panel" onclick="event.stopPropagation()">
+    <div class="panel-handle"></div>
+    <div class="panel-title">Members</div>
+    <div id="membersList"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──
+let lang = 'gr';
+let activeCategory = 'all';
+let shuffled = false;
+let jokeOrder = [];
+
+// ── CATEGORIES ──
+const cats = {
+  all:'All',
+  tech:'Tech',
+  life:'Life',
+  moti:'Motivation',
+  food:'Food',
+  social:'Social',
+  absurd:'Absurd',
+  gr:'Greek'
+};
+
+// ── JOKES DATA ──
+const jokes = [
+{en:"My WiFi has more mood swings than me.",gr:"Το WiFi έχει περισσότερες αλλαγές διάθεσης από εμένα.",c:"tech"},
+{en:"My laptop fan sounds like it's judging me.",gr:"Ο ανεμιστήρας του laptop με κρίνει.",c:"tech"},
+{en:"I clicked update and lost my will to live.",gr:"Πάτησα update και έχασα τη θέληση για ζωή.",c:"tech"},
+{en:"My phone knows my secrets better than I do.",gr:"Το κινητό ξέρει τα μυστικά μου καλύτερα από εμένα.",c:"tech"},
+{en:"My passwords are emotionally damaged.",gr:"Οι κωδικοί μου είναι συναισθηματικά τραυματισμένοι.",c:"tech"},
+{en:"I open settings and forget why I exist.",gr:"Ανοίγω settings και ξεχνάω γιατί υπάρχω.",c:"tech"},
+{en:"My browser tabs are a mental breakdown.",gr:"Τα tabs είναι ψυχολογική κατάρρευση.",c:"tech"},
+{en:"I trust autocorrect to ruin my life.",gr:"Εμπιστεύομαι το autocorrect να καταστρέψει τη ζωή μου.",c:"tech"},
+{en:"My phone battery drops faster than my motivation.",gr:"Η μπαταρία πέφτει πιο γρήγορα από το motivation.",c:"tech"},
+{en:"I scroll without purpose or direction.",gr:"Κάνω scroll χωρίς σκοπό.",c:"tech"},
+{en:"My life is a series of loading screens.",gr:"Η ζωή μου είναι loading screens.",c:"life"},
+{en:"I trip over my own thoughts.",gr:"Σκοντάφτω στις σκέψεις μου.",c:"life"},
+{en:"My existence is slightly delayed.",gr:"Η ύπαρξή μου είναι καθυστερημένη.",c:"life"},
+{en:"I exist in low resolution reality.",gr:"Υπάρχω σε low resolution.",c:"life"},
+{en:"My plans expire faster than milk.",gr:"Τα σχέδιά μου λήγουν πιο γρήγορα από το γάλα.",c:"life"},
+{en:"I lose keys and confidence equally fast.",gr:"Χάνω κλειδιά και αυτοπεποίθηση το ίδιο γρήγορα.",c:"life"},
+{en:"Life gave me notifications but no instructions.",gr:"Η ζωή μου έδωσε notifications χωρίς οδηγίες.",c:"life"},
+{en:"I reboot my personality daily.",gr:"Κάνω reboot στην προσωπικότητα μου καθημερινά.",c:"life"},
+{en:"Reality feels like a glitchy simulation.",gr:"Η πραγματικότητα είναι glitchy simulation.",c:"life"},
+{en:"I survive purely on accident.",gr:"Επιβιώνω καθαρά από τύχη.",c:"life"},
+{en:"My motivation left the chat permanently.",gr:"Το motivation έφυγε μόνιμα.",c:"moti"},
+{en:"I plan to succeed tomorrow again.",gr:"Σχεδιάζω να πετύχω αύριο πάλι.",c:"moti"},
+{en:"I work best under imaginary pressure.",gr:"Δουλεύω καλύτερα σε φανταστική πίεση.",c:"moti"},
+{en:"My ambition is on airplane mode.",gr:"Η φιλοδοξία είναι airplane mode.",c:"moti"},
+{en:"I delay everything professionally.",gr:"Καθυστερώ τα πάντα επαγγελματικά.",c:"moti"},
+{en:"My goals are still loading.",gr:"Οι στόχοι φορτώνουν ακόμα.",c:"moti"},
+{en:"I wake up tired in advance.",gr:"Ξυπνάω κουρασμένος από πριν.",c:"moti"},
+{en:"Success feels like a bug I can't trigger.",gr:"Η επιτυχία είναι bug.",c:"moti"},
+{en:"I almost become productive daily.",gr:"Σχεδόν γίνομαι παραγωγικός καθημερινά.",c:"moti"},
+{en:"My energy is permanently low battery.",gr:"Η ενέργεια είναι low battery.",c:"moti"},
+{en:"I cook like it's experimental science.",gr:"Μαγειρεύω σαν πείραμα.",c:"food"},
+{en:"My fridge is a museum of leftovers.",gr:"Το ψυγείο είναι μουσείο leftovers.",c:"food"},
+{en:"I eat emotionally and frequently.",gr:"Τρώω συναισθηματικά και συχνά.",c:"food"},
+{en:"My diet is fictional.",gr:"Η δίαιτα μου είναι φανταστική.",c:"food"},
+{en:"I open snacks like loot boxes.",gr:"Ανοίγω snacks σαν loot boxes.",c:"food"},
+{en:"Cooking instructions are optional to me.",gr:"Οι οδηγίες μαγειρικής είναι προαιρετικές.",c:"food"},
+{en:"I burn water sometimes.",gr:"Καίω ακόμα και το νερό.",c:"food"},
+{en:"My kitchen is chaos theory.",gr:"Η κουζίνα είναι chaos theory.",c:"food"},
+{en:"I snack like it's a hobby.",gr:"Τσιμπολογάω σαν hobby.",c:"food"},
+{en:"Food tastes better at midnight.",gr:"Το φαγητό είναι καλύτερο τα μεσάνυχτα.",c:"food"},
+{en:"I reply mentally but not physically.",gr:"Απαντάω στο μυαλό αλλά όχι στην πραγματικότητα.",c:"social"},
+{en:"My social battery is always empty.",gr:"Η κοινωνική μπαταρία είναι άδεια.",c:"social"},
+{en:"I attend conversations as a background character.",gr:"Είμαι background χαρακτήρας.",c:"social"},
+{en:"I read messages and panic later.",gr:"Διαβάζω μηνύματα και πανικοβάλλομαι μετά.",c:"social"},
+{en:"I ghost even myself sometimes.",gr:"Ghostάρω ακόμα και τον εαυτό μου.",c:"social"},
+{en:"My communication skills are on vacation.",gr:"Οι επικοινωνιακές μου δεξιότητες είναι διακοπές.",c:"social"},
+{en:"I say hi and regret it instantly.",gr:"Λέω γεια και το μετανιώνω.",c:"social"},
+{en:"Small talk drains my soul.",gr:"Το small talk μου ρουφάει την ψυχή.",c:"social"},
+{en:"I overthink every emoji I send.",gr:"Υπεραναλύω κάθε emoji.",c:"social"},
+{en:"I exist in read receipts only.",gr:"Υπάρχω μόνο στα read receipts.",c:"social"},
+{en:"I argue with myself and lose.",gr:"Καβγαδίζω με τον εαυτό μου και χάνω.",c:"absurd"},
+{en:"My shadow is more productive than me.",gr:"Η σκιά μου είναι πιο παραγωγική.",c:"absurd"},
+{en:"I blinked and missed a decade.",gr:"Έκλεισα τα μάτια και έχασα μια δεκαετία.",c:"absurd"},
+{en:"Gravity feels personal today.",gr:"Η βαρύτητα είναι προσωπική σήμερα.",c:"absurd"},
+{en:"I speak fluent nonsense daily.",gr:"Μιλάω άπταιστα ανοησίες.",c:"absurd"},
+{en:"My brain has too many side quests.",gr:"Ο εγκέφαλος έχει side quests.",c:"absurd"},
+{en:"Reality is optional sometimes.",gr:"Η πραγματικότητα είναι προαιρετική.",c:"absurd"},
+{en:"I confuse dreams with plans.",gr:"Μπερδεύω όνειρα με σχέδια.",c:"absurd"},
+{en:"Time travels faster without me.",gr:"Ο χρόνος ταξιδεύει πιο γρήγορα χωρίς εμένα.",c:"absurd"},
+{en:"I exist in beta testing mode.",gr:"Υπάρχω σε beta mode.",c:"absurd"},
+{en:"My souvlaki understands me better than people.",gr:"Το σουβλάκι με καταλαβαίνει καλύτερα από ανθρώπους.",c:"gr"},
+{en:"I need coffee like Greeks need ouzo.",gr:"Χρειάζομαι καφέ όπως οι Έλληνες ούζο.",c:"gr"},
+{en:"My life is like traffic in Athens.",gr:"Η ζωή μου είναι σαν κίνηση στην Αθήνα.",c:"gr"},
+{en:"I wait for buses that never arrive.",gr:"Περιμένω λεωφορεία που δεν έρχονται.",c:"gr"},
+{en:"My WiFi is slower than Greek bureaucracy.",gr:"Το WiFi πιο αργό από ελληνική γραφειοκρατία.",c:"gr"},
+{en:"I argue like I'm in a Greek tavern debate.",gr:"Καβγαδίζω σαν σε ελληνικό καφενείο.",c:"gr"},
+{en:"My patience is like summer in Athens — short.",gr:"Η υπομονή μου είναι σαν καλοκαίρι στην Αθήνα.",c:"gr"},
+{en:"I nap like it's a Greek tradition.",gr:"Κοιμάμαι σαν ελληνική παράδοση.",c:"gr"},
+{en:"My schedule is more flexible than gyro bread.",gr:"Το πρόγραμμα μου πιο flexible από πίτα γύρο.",c:"gr"},
+{en:"I live one tzatziki away from happiness.",gr:"Είμαι ένα τζατζίκι μακριά από ευτυχία.",c:"gr"},
+{en:"My morning alarm is just a suggestion.",gr:"Το ξυπνητήρι μου είναι απλώς πρόταση.",c:"life"},
+{en:"I have strong opinions on napping.",gr:"Έχω ισχυρές απόψεις για τον μεσημεριανό ύπνο.",c:"life"},
+{en:"My to-do list has its own to-do list.",gr:"Η λίστα μου έχει τη δική της λίστα.",c:"moti"},
+{en:"I peaked during a nap once.",gr:"Κορυφώθηκα κάποτε κατά τη διάρκεια ύπνου.",c:"moti"},
+{en:"My inner monologue needs subtitles.",gr:"Ο εσωτερικός μου μονόλογος χρειάζεται υπότιτλους.",c:"absurd"},
+{en:"I speak three languages: sarcasm, silence, and sighing.",gr:"Μιλάω τρεις γλώσσες: σαρκασμό, σιωπή, αναστεναγμό.",c:"social"},
+{en:"My resting face means I'm fine.",gr:"Η έκφρασή μου σημαίνει ότι είμαι εντάξει.",c:"social"},
+{en:"I have a black belt in overthinking.",gr:"Έχω μαύρη ζώνη στο υπερβολικό σκέφτεσθαι.",c:"absurd"},
+{en:"My attention span has left the building.",gr:"Η προσοχή μου έχει φύγει από το κτίριο.",c:"tech"},
+{en:"I forgot what I was going to say and I'm fine with it.",gr:"Ξέχασα τι ήθελα να πω και το αποδέχομαι.",c:"life"},
+{en:"My bed understands me on a spiritual level.",gr:"Το κρεβάτι μου με καταλαβαίνει πνευματικά.",c:"life"},
+{en:"I am fluent in passive aggression.",gr:"Μιλάω άπταιστα παθητική επιθετικότητα.",c:"social"},
+{en:"My comfort zone is expanding — inward.",gr:"Η ζώνη άνεσής μου επεκτείνεται — προς τα μέσα.",c:"life"},
+{en:"I once had a plan. It was a Tuesday.",gr:"Κάποτε είχα σχέδιο. Ήταν Τρίτη.",c:"moti"},
+{en:"My personality is an acquired taste.",gr:"Η προσωπικότητά μου είναι επίκτητη γεύση.",c:"social"},
+{en:"I communicate best through long pauses.",gr:"Επικοινωνώ καλύτερα μέσω μακρών παύσεων.",c:"social"},
+{en:"My opinions are strong and poorly timed.",gr:"Οι απόψεις μου είναι ισχυρές και κακά χρονισμένες.",c:"absurd"},
+{en:"I'm not lazy, I'm horizontally motivated.",gr:"Δεν είμαι τεμπέλης, είμαι οριζόντια παρακινημένος.",c:"moti"},
+{en:"My potential is theoretical at this stage.",gr:"Το δυναμικό μου είναι θεωρητικό σε αυτό το στάδιο.",c:"moti"},
+{en:"I committed to a decision and immediately regretted it.",gr:"Δεσμεύτηκα σε μια απόφαση και αμέσως το μετάνιωσα.",c:"life"},
+{en:"My handwriting is a personal code.",gr:"Η γραφή μου είναι προσωπικός κώδικας.",c:"absurd"},
+{en:"I function on spite and strong coffee.",gr:"Λειτουργώ με πείσμα και δυνατό καφέ.",c:"life"},
+{en:"My emotional range is nap to panic.",gr:"Το συναισθηματικό μου εύρος είναι από ύπνο σε πανικό.",c:"life"},
+{en:"I gave 110% once and took a two-year break.",gr:"Έδωσα 110% μια φορά και πήρα διετή διάλειμμα.",c:"moti"},
+{en:"My life philosophy: we'll see.",gr:"Η φιλοσοφία ζωής μου: θα δούμε.",c:"life"},
+{en:"I multitask badly and efficiently.",gr:"Κάνω multitask άσχημα και αποτελεσματικά.",c:"tech"},
+{en:"My weekend plans have a 20% execution rate.",gr:"Τα σχέδια του Σαββατοκύριακου έχουν ποσοστό εκτέλεσης 20%.",c:"moti"},
+{en:"I apologize for things that haven't happened yet.",gr:"Ζητάω συγγνώμη για πράγματα που δεν έχουν γίνει ακόμα.",c:"social"},
+{en:"My mirror gives me complicated feedback.",gr:"Ο καθρέφτης μου δίνει περίπλοκη ανατροφοδότηση.",c:"absurd"},
+{en:"I dressed for the job I want: pajamas.",gr:"Ντύθηκα για τη δουλειά που θέλω: πιτζάμες.",c:"life"},
+{en:"My budget is creative fiction.",gr:"Ο προϋπολογισμός μου είναι δημιουργική φαντασία.",c:"life"},
+{en:"I have commitment issues with meal plans.",gr:"Έχω πρόβλημα δέσμευσης με τα διατροφικά πλάνα.",c:"food"},
+{en:"My alarm clock and I have a toxic relationship.",gr:"Το ξυπνητήρι μου κι εγώ έχουμε τοξική σχέση.",c:"life"},
+{en:"I exercise every January 1st. Annually.",gr:"Γυμνάζομαι κάθε 1η Ιανουαρίου. Ετησίως.",c:"moti"},
+{en:"My inbox is a horror film.",gr:"Τα εισερχόμενα μου είναι ταινία τρόμου.",c:"tech"},
+{en:"I make to-do lists to feel alive.",gr:"Φτιάχνω λίστες για να νιώθω ζωντανός.",c:"moti"},
+{en:"My sense of direction is legendary — for being wrong.",gr:"Η αίσθηση κατεύθυνσής μου είναι θρυλική — για τα λάθη.",c:"absurd"},
+{en:"I misplace things I bought specifically not to misplace.",gr:"Χάνω πράγματα που αγόρασα ειδικά για να μην τα χάσω.",c:"life"},
+{en:"My self-control and I are estranged.",gr:"Η αυτοσυγκράτηση κι εγώ είμαστε αποξενωμένοι.",c:"life"},
+{en:"I set three alarms and ignore all of them.",gr:"Βάζω τρία ξυπνητήρια και αγνοώ και τα τρία.",c:"life"},
+{en:"My posture is a cry for help.",gr:"Η στάση μου είναι κραυγή βοήθειας.",c:"life"},
+{en:"I read the first sentence of every article.",gr:"Διαβάζω την πρώτη πρόταση κάθε άρθρου.",c:"tech"},
+{en:"My grocery list is pure ambition.",gr:"Η λίστα του σούπερ μάρκετ είναι καθαρή φιλοδοξία.",c:"food"},
+{en:"I remember dreams vividly and facts poorly.",gr:"Θυμάμαι όνειρα ζωντανά και γεγονότα άσχημα.",c:"absurd"},
+{en:"My coffee order is my personality.",gr:"Η παραγγελία καφέ είναι η προσωπικότητά μου.",c:"gr"},
+{en:"I have the memory of a goldfish for deadlines.",gr:"Έχω μνήμη χρυσόψαρου για προθεσμίες.",c:"moti"},
+{en:"My parking skills are interpretive art.",gr:"Η παρκάρισμά μου είναι ερμηνευτική τέχνη.",c:"gr"},
+{en:"I answer emails with the enthusiasm of someone under arrest.",gr:"Απαντάω email με ενθουσιασμό κρατούμενου.",c:"tech"},
+{en:"My brain shuts down after 10pm precisely.",gr:"Ο εγκέφαλός μου κλείνει ακριβώς μετά τις 10.",c:"life"},
+{en:"I have a gift for arriving five minutes late everywhere.",gr:"Έχω χάρισμα να φτάνω πέντε λεπτά αργά παντού.",c:"gr"},
+{en:"My idea of a workout is heavy thinking.",gr:"Η άσκησή μου είναι βαριά σκέψη.",c:"moti"},
+{en:"I overpack for every trip, including to the kitchen.",gr:"Πακετάρω υπερβολικά για κάθε ταξίδι, ακόμα και στην κουζίνα.",c:"life"},
+{en:"My social skills peak at exactly one drink.",gr:"Οι κοινωνικές μου δεξιότητες κορυφώνονται σε ακριβώς ένα ποτό.",c:"social"},
+{en:"I have opinions about other people's driving.",gr:"Έχω απόψεις για την οδήγηση των άλλων.",c:"gr"},
+{en:"My WiFi password is my one secret.",gr:"Ο κωδικός WiFi είναι το μοναδικό μου μυστικό.",c:"tech"},
+{en:"I aged ten years waiting for that page to load.",gr:"Γέρασα δέκα χρόνια περιμένοντας τη σελίδα.",c:"tech"},
+{en:"My relationship with Mondays is officially over.",gr:"Η σχέση μου με τις Δευτέρες τελείωσε επίσημα.",c:"life"},
+{en:"I survive on nostalgia and carbohydrates.",gr:"Επιβιώνω από νοσταλγία και υδατάνθρακες.",c:"food"},
+{en:"My internal clock runs on Mediterranean time.",gr:"Το εσωτερικό μου ρολόι τρέχει σε μεσογειακή ώρα.",c:"gr"},
+{en:"I have a complicated relationship with vegetables.",gr:"Έχω περίπλοκη σχέση με τα λαχανικά.",c:"food"},
+{en:"My handshake has been called memorable for the wrong reasons.",gr:"Η χειραψία μου αποκλήθηκε αξέχαστη για λάθος λόγους.",c:"social"},
+{en:"I take criticism well — on the outside.",gr:"Δέχομαι κριτική καλά — εξωτερικά.",c:"social"},
+{en:"My vacation mode is permanently on.",gr:"Η λειτουργία διακοπών είναι μόνιμα ενεργοποιημένη.",c:"life"},
+{en:"I answer 'I don't know' with great confidence.",gr:"Απαντάω 'δεν ξέρω' με μεγάλη αυτοπεποίθηση.",c:"absurd"},
+{en:"My Google history is a psychological profile.",gr:"Το ιστορικό Google μου είναι ψυχολογικό προφίλ.",c:"tech"},
+{en:"I leave the house five minutes after I should have.",gr:"Φεύγω από το σπίτι πέντε λεπτά αφού έπρεπε.",c:"life"},
+{en:"My phone has 3000 photos, mostly of food.",gr:"Το κινητό μου έχει 3000 φωτογραφίες, κυρίως φαγητό.",c:"food"},
+{en:"I clean the house only when someone is coming over.",gr:"Καθαρίζω μόνο όταν έρχεται κάποιος.",c:"life"},
+{en:"My snooze button gets more use than my gym shoes.",gr:"Το snooze χρησιμοποιείται περισσότερο από τα αθλητικά μου.",c:"moti"},
+{en:"I apologize to furniture when I bump into it.",gr:"Ζητάω συγγνώμη στα έπιπλα όταν τα χτυπάω.",c:"absurd"},
+{en:"My sunglasses are on even in winter.",gr:"Τα γυαλιά μου είναι πάντα παρόντα, ακόμα και τον χειμώνα.",c:"gr"},
+{en:"I own seventeen mugs and use one.",gr:"Έχω δεκαεπτά κούπες και χρησιμοποιώ μία.",c:"life"},
+{en:"My biggest fear is an unexpected phone call.",gr:"Ο μεγαλύτερος φόβος μου είναι απρόσμενη κλήση.",c:"social"},
+{en:"I have started the same book four times.",gr:"Έχω αρχίσει το ίδιο βιβλίο τέσσερις φορές.",c:"life"},
+{en:"My cooking experiments end in ordering delivery.",gr:"Τα μαγειρικά πειράματα καταλήγουν σε delivery.",c:"food"},
+{en:"I say 'almost ready' for approximately forty minutes.",gr:"Λέω 'σχεδόν έτοιμος' για περίπου σαράντα λεπτά.",c:"gr"},
+{en:"My handwriting is a lost dialect.",gr:"Η γραφή μου είναι χαμένη διάλεκτος.",c:"absurd"},
+{en:"I have a sixth sense for when food is nearby.",gr:"Έχω έκτη αίσθηση για το κοντινό φαγητό.",c:"food"},
+{en:"My philosophy of life: there is always dessert.",gr:"Η φιλοσοφία ζωής μου: υπάρχει πάντα επιδόρπιο.",c:"food"},
+{en:"I give advice I never follow.",gr:"Δίνω συμβουλές που δεν ακολουθώ ποτέ.",c:"absurd"},
+{en:"My sense of time is pure poetry.",gr:"Η αίσθηση χρόνου μου είναι καθαρή ποίηση.",c:"absurd"},
+{en:"I have the energy of someone who slept fine but didn't.",gr:"Έχω ενέργεια κάποιου που κοιμήθηκε καλά αλλά δεν κοιμήθηκε.",c:"life"},
+{en:"My plans for the weekend survived until Saturday morning.",gr:"Τα σχέδια για το Σαββατοκύριακο επέζησαν μέχρι το Σάββατο πρωί.",c:"life"},
+];
+
+// ── INIT ORDER ──
+function resetOrder(){jokeOrder=jokes.map((_,i)=>i)}
+resetOrder();
+document.getElementById('totalCount').textContent=jokes.length;
+
+// ── PARTICLES ──
+const emojis=['😂','🤣','😆','😄','💀','🥲','😅','😁','🤭','😜','🤪','😹'];
+const pc=document.getElementById('particles');
+function spawnParticle(){
+  const el=document.createElement('span');
+  el.className='p';
+  el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+  const sz=0.8+Math.random()*1.6;
+  el.style.cssText=`font-size:${sz}rem;left:${Math.random()*100}%;animation-duration:${10+Math.random()*16}s;animation-delay:${Math.random()*4}s`;
+  pc.appendChild(el);
+  setTimeout(()=>el.remove(),(26+Math.random()*4)*1000);
+}
+for(let i=0;i<18;i++)spawnParticle();
+setInterval(spawnParticle,900);
+
+// ── BUILD CHIPS ──
+function buildChips(){
+  const el=document.getElementById('chips');
+  el.innerHTML=Object.entries(cats).map(([k,v])=>
+    `<button class="chip${activeCategory===k?' on':''}" onclick="setCategory('${k}')">${v}</button>`
+  ).join('');
+}
+buildChips();
+
+function setCategory(c){
+  activeCategory=c;
+  buildChips();
+  renderFeed();
+}
+
+// ── SPOTLIGHT ──
+function newSpotlight(){
+  const pool=jokes.filter(j=>activeCategory==='all'||j.c===activeCategory);
+  const j=pool[Math.floor(Math.random()*pool.length)];
+  const el=document.getElementById('spotlightText');
+  el.style.opacity='0';
+  el.style.transform='translateY(6px)';
+  setTimeout(()=>{
+    el.textContent=lang==='gr'?j.gr:j.en;
+    el.style.transition='all .35s ease';
+    el.style.opacity='1';
+    el.style.transform='translateY(0)';
+  },180);
+}
+newSpotlight();
+
+// ── SHUFFLE ──
+function shuffleJokes(){
+  jokeOrder=[...jokeOrder].sort(()=>Math.random()-.5);
+  shuffled=true;
+  renderFeed();
+  showToast('Shuffled ✦');
+}
+
+// ── RENDER FEED ──
+function renderFeed(){
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  const feed=document.getElementById('feed');
+  const countEl=document.getElementById('countLabel');
+  const heroEl=document.getElementById('heroCount');
+
+  const list=jokeOrder
+    .map(i=>({joke:jokes[i],idx:i}))
+    .filter(({joke:j})=>{
+      const txt=(lang==='gr'?j.gr:j.en).toLowerCase();
+      const catOk=activeCategory==='all'||j.c===activeCategory;
+      return catOk&&txt.includes(q);
+    });
+
+  const n=list.length;
+  countEl.textContent=`${n} ${n===1?'entry':'entries'}`;
+  heroEl.innerHTML=`<span>${jokes.length}</span> jokes — <span>${n}</span> showing`;
+
+  feed.innerHTML='';
+  if(!n){
+    feed.innerHTML='<div class="empty-state">No results — try a different search</div>';
+    return;
+  }
+
+  const frag=document.createDocumentFragment();
+  list.forEach(({joke:j,idx},i)=>{
+    const div=document.createElement('div');
+    div.className='joke-card';
+    div.style.animationDelay=(i*14)+'ms';
+    div.innerHTML=`
+      <span class="joke-num">${String(i+1).padStart(2,'0')}</span>
+      <div class="joke-body">
+        <span class="joke-cat-tag">${cats[j.c]||''}</span>
+        <div class="joke-text">${lang==='gr'?j.gr:j.en}</div>
+        <div class="joke-actions">
+          <button class="react-btn" onclick="copyJoke(${idx})" title="Copy">⎘</button>
+        </div>
+      </div>`;
+    frag.appendChild(div);
+  });
+  feed.appendChild(frag);
+}
+
+// ── COPY ──
+function copyJoke(idx){
+  const j=jokes[idx];
+  const txt=lang==='gr'?j.gr:j.en;
+  navigator.clipboard.writeText(txt).then(()=>showToast('Copied ✦')).catch(()=>{});
+}
+
+// ── TOAST ──
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+// ── LANG ──
+function toggleLang(){
+  lang=lang==='gr'?'en':'gr';
+  document.getElementById('langBtn').textContent=lang==='gr'?'EN / GR':'GR / EN';
+  document.getElementById('footerLang').textContent=lang==='gr'?'GR mode':'EN mode';
+  newSpotlight();
+  renderFeed();
+}
+
+// ── MEMBERS ──
+const members=[];
+function openPanel(){
+  const list=document.getElementById('membersList');
+  list.innerHTML=members.length?members.map((m,i)=>`
+    <div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)">
+      <span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--t3);min-width:24px">${String(i+1).padStart(2,'0')}</span>
+      <div style="width:34px;height:34px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:var(--gold);font-family:'DM Mono',monospace">${m.trim().split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase()}</div>
+      <span style="font-size:.95rem;color:var(--t1)">${m}</span>
+    </div>`).join('')
+    :`<div class="panel-empty">Coming Soon<br><span style="font-size:.55rem;opacity:.5">Member names will appear here</span></div>`;
+  document.getElementById('panelBackdrop').classList.add('open');
+}
+function closePanel(){document.getElementById('panelBackdrop').classList.remove('open')}
+
+// ── KEYBOARD ──
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==document.getElementById('search')){
+    e.preventDefault();document.getElementById('search').focus();
+  }
+  if(e.key==='Escape'){
+    closePanel();
+    document.getElementById('search').blur();
+  }
+});
+
+renderFeed();
 </script>
 </body>
 </html>
