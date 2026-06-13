@@ -11,6 +11,10 @@
   --bg:       #07080a;
   --bg1:      #0d0f12;
   --bg2:      #12141a;
+  --accent:   #e8c96d;
+  --accent2:  #f5dfa0;
+  --accent-dim: rgba(232,201,109,.08);
+  --accent-glow:rgba(232,201,109,.18);
   --gold:     #e8c96d;
   --gold2:    #f5dfa0;
   --gold-dim: rgba(232,201,109,.08);
@@ -36,7 +40,6 @@ body {
   cursor:default;
 }
 
-/* ── GRAIN OVERLAY ── */
 body::before {
   content:'';
   position:fixed;inset:0;
@@ -46,7 +49,6 @@ body::before {
   z-index:9999;
 }
 
-/* ── SPOTLIGHT BG ── */
 .spotlight {
   position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;
 }
@@ -55,7 +57,7 @@ body::before {
   position:absolute;
   top:-30%;left:50%;transform:translateX(-50%);
   width:700px;height:700px;
-  background:radial-gradient(ellipse at center, rgba(232,201,109,.07) 0%, transparent 70%);
+  background:radial-gradient(ellipse at center, var(--accent-glow) 0%, transparent 70%);
   animation:breathe 8s ease-in-out infinite;
 }
 @keyframes breathe {
@@ -63,7 +65,6 @@ body::before {
   50%{transform:translateX(-50%) scale(1.15);opacity:1}
 }
 
-/* ── FLOATING PARTICLES ── */
 #particles{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
 .p{
   position:absolute;
@@ -80,7 +81,7 @@ body::before {
   100%{transform:translateY(-8vh) rotate(12deg);opacity:0}
 }
 
-/* ── HEADER ── */
+/* HEADER */
 header {
   position:sticky;top:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
@@ -96,7 +97,7 @@ header {
   font-family:'Playfair Display',serif;
   font-size:1.35rem;
   font-weight:900;
-  color:var(--gold);
+  color:var(--accent);
   letter-spacing:.5px;
   line-height:1;
 }
@@ -109,23 +110,6 @@ header {
 }
 .header-actions{display:flex;align-items:center;gap:10px}
 
-.pill-btn {
-  background:transparent;
-  border:1px solid var(--t3);
-  color:var(--t2);
-  padding:7px 16px;
-  border-radius:100px;
-  cursor:pointer;
-  font-family:'Syne',sans-serif;
-  font-size:.7rem;
-  font-weight:700;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  transition:all .2s;
-}
-.pill-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
-.pill-btn.active{border-color:var(--gold);color:#000;background:var(--gold)}
-
 .shuffle-btn {
   background:transparent;
   border:1px solid var(--t3);
@@ -137,7 +121,191 @@ header {
 }
 .shuffle-btn:hover{border-color:var(--teal);color:var(--teal);background:rgba(93,207,207,.08);transform:rotate(30deg)}
 
-/* ── HERO ── */
+.settings-btn {
+  background:transparent;
+  border:1px solid var(--t3);
+  color:var(--t2);
+  width:36px;height:36px;
+  border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.95rem;
+  transition:all .22s;
+  flex-shrink:0;
+}
+.settings-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.settings-btn.open{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+
+/* SETTINGS PANEL */
+.settings-overlay {
+  display:none;
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(4px);
+  animation:fadeIn .2s ease;
+}
+.settings-overlay.open{display:block}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.settings-panel {
+  position:fixed;right:0;top:0;bottom:0;z-index:201;
+  width:340px;max-width:95vw;
+  background:var(--bg1);
+  border-left:1px solid var(--line2);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);
+  transition:transform .3s cubic-bezier(.22,.68,0,1.2);
+  overflow-y:auto;
+}
+.settings-panel.open{transform:translateX(0)}
+
+.settings-header {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:24px 24px 16px;
+  border-bottom:1px solid var(--line);
+  flex-shrink:0;
+}
+.settings-title {
+  font-family:'Playfair Display',serif;
+  font-size:1.15rem;
+  font-weight:900;
+  color:var(--accent);
+}
+.settings-close {
+  background:transparent;border:1px solid var(--t3);
+  color:var(--t2);width:30px;height:30px;border-radius:50%;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;transition:all .2s;
+}
+.settings-close:hover{border-color:var(--accent);color:var(--accent)}
+
+.settings-section {
+  padding:20px 24px;
+  border-bottom:1px solid var(--line);
+}
+.settings-section-label {
+  font-family:'DM Mono',monospace;
+  font-size:.58rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--t3);
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+
+.lang-toggle-row {
+  display:flex;align-items:center;justify-content:space-between;
+}
+.settings-row-label {
+  font-family:'Syne',sans-serif;
+  font-size:.8rem;
+  color:var(--t2);
+}
+.lang-toggle-btns {
+  display:flex;gap:6px;
+}
+.lang-option {
+  background:transparent;
+  border:1px solid var(--t3);
+  color:var(--t2);
+  padding:5px 14px;
+  border-radius:100px;
+  cursor:pointer;
+  font-family:'DM Mono',monospace;
+  font-size:.65rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  transition:all .2s;
+}
+.lang-option.active{border-color:var(--accent);color:#000;background:var(--accent)}
+.lang-option:hover:not(.active){border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+
+.theme-toggle-row {
+  display:flex;align-items:center;justify-content:space-between;
+}
+.theme-switch {
+  position:relative;width:52px;height:28px;
+  background:var(--t3);border-radius:100px;
+  cursor:pointer;transition:background .25s;
+  border:1px solid var(--line2);
+  flex-shrink:0;
+}
+.theme-switch.light-on{background:var(--accent)}
+.theme-switch::after{
+  content:'🌙';
+  position:absolute;top:3px;left:4px;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--bg);
+  transition:transform .25s;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;
+  line-height:20px;text-align:center;
+}
+.theme-switch.light-on::after{content:'☀️';transform:translateX(24px)}
+
+.color-palettes {
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+}
+.palette-btn {
+  background:transparent;
+  border:1px solid var(--line2);
+  border-radius:10px;
+  padding:10px 12px;
+  cursor:pointer;
+  display:flex;align-items:center;gap:9px;
+  transition:all .2s;
+}
+.palette-btn:hover{border-color:var(--accent);background:var(--accent-dim)}
+.palette-btn.active{border-color:var(--accent);background:var(--accent-dim)}
+.palette-dots {
+  display:flex;gap:4px;flex-shrink:0;
+}
+.palette-dot {
+  width:10px;height:10px;border-radius:50%;
+}
+.palette-name {
+  font-family:'DM Mono',monospace;
+  font-size:.58rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--t2);
+  white-space:nowrap;
+}
+
+.whats-new-list {
+  display:flex;flex-direction:column;gap:14px;
+}
+.wn-item {
+  display:flex;gap:12px;align-items:flex-start;
+}
+.wn-dot {
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  flex-shrink:0;
+  margin-top:5px;
+}
+.wn-text {
+  font-family:'Syne',sans-serif;
+  font-size:.76rem;
+  color:var(--t2);
+  line-height:1.55;
+}
+.wn-text strong {
+  color:var(--t1);
+  font-weight:700;
+}
+.wn-badge {
+  display:inline-block;
+  font-family:'DM Mono',monospace;
+  font-size:.5rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  background:var(--accent);
+  color:#000;
+  padding:2px 7px;
+  border-radius:100px;
+}
+
+/* HERO */
 .hero {
   position:relative;z-index:2;
   text-align:center;
@@ -149,7 +317,7 @@ header {
   font-size:.65rem;
   letter-spacing:.25em;
   text-transform:uppercase;
-  color:var(--gold);
+  color:var(--accent);
   opacity:.7;
   margin-bottom:16px;
 }
@@ -164,13 +332,13 @@ header {
 }
 .hero-title em {
   font-style:italic;
-  color:var(--gold);
+  color:var(--accent);
   position:relative;
 }
 .hero-title em::after {
   content:'';
   position:absolute;left:0;bottom:-4px;width:100%;height:2px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
 }
 .hero-count {
   font-family:'DM Mono',monospace;
@@ -180,11 +348,11 @@ header {
   margin-top:20px;
 }
 .hero-count span {
-  color:var(--gold);
+  color:var(--accent);
   font-weight:500;
 }
 
-/* ── SEARCH ── */
+/* SEARCH */
 .search-section{
   position:relative;z-index:2;
   max-width:600px;margin:0 auto;
@@ -212,11 +380,11 @@ header {
 }
 #search::placeholder{color:var(--t3)}
 #search:focus{
-  border-color:var(--gold);
-  box-shadow:0 0 0 3px var(--gold-dim), 0 0 24px var(--gold-glow);
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-dim), 0 0 24px var(--accent-glow);
 }
 
-/* ── FILTER CHIPS ── */
+/* FILTER CHIPS */
 .chips {
   display:flex;flex-wrap:wrap;gap:8px;
   max-width:680px;margin:0 auto 32px;
@@ -238,10 +406,10 @@ header {
   transition:all .18s;
   white-space:nowrap;
 }
-.chip:hover{border-color:var(--gold);color:var(--gold)}
-.chip.on{border-color:var(--gold);color:#000;background:var(--gold)}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on{border-color:var(--accent);color:#000;background:var(--accent)}
 
-/* ── DIVIDER ── */
+/* DIVIDER */
 .divider {
   display:flex;align-items:center;gap:16px;
   max-width:680px;margin:0 auto 8px;
@@ -258,7 +426,7 @@ header {
   white-space:nowrap;
 }
 
-/* ── FEED ── */
+/* FEED */
 #feed {
   max-width:680px;margin:0 auto;
   padding:8px 24px 80px;
@@ -268,7 +436,7 @@ header {
 .joke-card {
   position:relative;
   display:flex;align-items:flex-start;gap:20px;
-  padding:20px 0;
+  padding:24px 0;
   border-bottom:1px solid var(--line);
   animation:slideIn .3s ease both;
   transition:background .2s;
@@ -290,7 +458,7 @@ header {
   flex-shrink:0;
   transition:color .2s;
 }
-.joke-card:hover .joke-num{color:var(--gold);opacity:.6}
+.joke-card:hover .joke-num{color:var(--accent);opacity:.6}
 
 .joke-body{flex:1;min-width:0}
 
@@ -308,11 +476,11 @@ header {
   font-family:'Playfair Display',serif;
   font-size:1.05rem;
   font-style:italic;
-  line-height:1.7;
+  line-height:1.78;
   color:var(--t1);
   transition:color .2s;
 }
-.joke-card:hover .joke-text{color:var(--gold2)}
+.joke-card:hover .joke-text{color:var(--accent2)}
 
 .joke-actions {
   display:flex;align-items:center;gap:6px;
@@ -328,9 +496,9 @@ header {
   color:var(--t3);
   border:1px solid transparent;
 }
-.react-btn:hover{background:var(--gold-dim);border-color:var(--line2)}
+.react-btn:hover{background:var(--accent-dim);border-color:var(--line2)}
 
-/* ── SPOTLIGHT JOKE ── */
+/* SPOTLIGHT */
 .spotlight-card {
   position:relative;z-index:2;
   max-width:680px;margin:0 auto 32px;
@@ -347,15 +515,15 @@ header {
   transition:border-color .25s, box-shadow .25s;
 }
 .spotlight-inner:hover {
-  border-color:var(--gold);
-  box-shadow:0 0 40px var(--gold-glow);
+  border-color:var(--accent);
+  box-shadow:0 0 40px var(--accent-glow);
 }
 .spotlight-inner::before {
   content:'"';
   position:absolute;top:-20px;left:16px;
   font-family:'Playfair Display',serif;
   font-size:9rem;
-  color:var(--gold);
+  color:var(--accent);
   opacity:.06;
   line-height:1;
   pointer-events:none;
@@ -365,7 +533,7 @@ header {
   font-size:.58rem;
   letter-spacing:.2em;
   text-transform:uppercase;
-  color:var(--gold);
+  color:var(--accent);
   opacity:.6;
   margin-bottom:10px;
 }
@@ -384,7 +552,7 @@ header {
   letter-spacing:.1em;
 }
 
-/* ── EMPTY ── */
+/* EMPTY */
 .empty-state{
   text-align:center;padding:80px 20px;
   font-family:'DM Mono',monospace;
@@ -392,11 +560,11 @@ header {
   text-transform:uppercase;color:var(--t3);
 }
 
-/* ── TOAST ── */
+/* TOAST */
 .toast {
   position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:var(--bg2);border:1px solid var(--gold);
-  color:var(--gold);
+  background:var(--bg2);border:1px solid var(--accent);
+  color:var(--accent);
   font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;
   padding:10px 22px;border-radius:100px;
   opacity:0;pointer-events:none;transition:all .3s;
@@ -404,7 +572,7 @@ header {
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ── FOOTER ── */
+/* FOOTER */
 footer {
   border-top:1px solid var(--line);
   padding:20px 28px;
@@ -420,54 +588,37 @@ footer {
   font-size:.58rem;color:var(--t3);letter-spacing:.08em;
 }
 
-/* ── LIGHT MODE ── */
+/* LIGHT MODE */
 body.light {
   --bg:       #f5f0e8;
   --bg1:      #ede8de;
   --bg2:      #e4ddd2;
-  --gold:     #a07820;
-  --gold2:    #c09030;
-  --gold-dim: rgba(160,120,32,.08);
-  --gold-glow:rgba(160,120,32,.14);
   --t1:       #1a1610;
   --t2:       #6a5c40;
   --t3:       #b0a080;
-  --line:     rgba(160,120,32,.15);
-  --line2:    rgba(160,120,32,.28);
+  --line:     rgba(0,0,0,.1);
+  --line2:    rgba(0,0,0,.18);
 }
-body.light header{background:rgba(245,240,232,.94)}
-body.light .spotlight::before{background:radial-gradient(ellipse at center,rgba(160,120,32,.06) 0%,transparent 70%)}
+body.light header{background:rgba(245,240,232,.96)}
+body.light .spotlight::before{background:radial-gradient(ellipse at center,var(--accent-glow) 0%,transparent 70%)}
 body.light #search{background:var(--bg1)}
 body.light .spotlight-inner{background:var(--bg1)}
-body.light .panel{background:var(--bg1)}
+body.light .settings-panel{background:var(--bg1)}
 
-/* ── THEME TOGGLE ── */
-.theme-btn {
-  background:transparent;
-  border:1px solid var(--t3);
-  color:var(--t2);
-  width:36px;height:36px;
-  border-radius:50%;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.95rem;
-  transition:all .22s;
-  flex-shrink:0;
-}
-.theme-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
-
-/* ── SCROLLBAR ── */
+/* SCROLLBAR */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--t3);border-radius:2px}
-::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
 
-/* ── RESPONSIVE ── */
+/* RESPONSIVE */
 @media(max-width:600px){
   header{padding:14px 20px}
   .logo-title{font-size:1.1rem}
   .hero{padding:40px 16px 32px}
   #feed,.search-section,.chips,.spotlight-card,.divider{padding-left:16px;padding-right:16px}
   .spotlight-inner{padding:20px}
+  .settings-panel{width:100vw}
 }
 </style>
 </head>
@@ -476,6 +627,61 @@ body.light .panel{background:var(--bg1)}
 <div class="spotlight"></div>
 <div id="particles"></div>
 
+<!-- Settings -->
+<div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-header">
+    <div class="settings-title">Settings</div>
+    <button class="settings-close" onclick="closeSettings()">✕</button>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-label">Language</div>
+    <div class="lang-toggle-row">
+      <span class="settings-row-label">Display jokes in</span>
+      <div class="lang-toggle-btns">
+        <button class="lang-option active" id="langGR" onclick="setLang('gr')">GR</button>
+        <button class="lang-option" id="langEN" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-label">Appearance</div>
+    <div class="theme-toggle-row">
+      <span class="settings-row-label" id="themeLabel">Dark mode</span>
+      <div class="theme-switch" id="themeSwitch" onclick="toggleTheme()"></div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-label">Color Theme</div>
+    <div class="color-palettes" id="palettes"></div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-label">What's New &nbsp;<span class="wn-badge">v2</span></div>
+    <div class="whats-new-list">
+      <div class="wn-item">
+        <div class="wn-dot"></div>
+        <div class="wn-text"><strong>Settings panel</strong> — Language and appearance controls are now tucked here instead of crowding the header.</div>
+      </div>
+      <div class="wn-item">
+        <div class="wn-dot"></div>
+        <div class="wn-text"><strong>Color themes</strong> — Six accent palettes available. Each one adapts automatically when you switch between dark and light mode so contrast always feels right.</div>
+      </div>
+      <div class="wn-item">
+        <div class="wn-dot"></div>
+        <div class="wn-text"><strong>Full jokes</strong> — Replaced the one-liner stubs with real jokes that have a proper setup and a payoff worth reading.</div>
+      </div>
+      <div class="wn-item">
+        <div class="wn-dot"></div>
+        <div class="wn-text"><strong>Roomier cards</strong> — Joke cards now have more padding so longer jokes breathe properly.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <header>
   <div class="logo">
     <div class="logo-title">Τελεια Ανεκδοτα</div>
@@ -483,8 +689,7 @@ body.light .panel{background:var(--bg1)}
   </div>
   <div class="header-actions">
     <button class="shuffle-btn" onclick="shuffleJokes()" title="Shuffle">⇄</button>
-    <button class="pill-btn" id="langBtn" onclick="toggleLang()">EN / GR</button>
-    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle light/dark">🌙</button>
+    <button class="settings-btn" id="settingsBtn" onclick="openSettings()" title="Settings">⚙</button>
   </div>
 </header>
 
@@ -494,7 +699,6 @@ body.light .panel{background:var(--bg1)}
   <div class="hero-count" id="heroCount">Loading…</div>
 </section>
 
-<!-- Spotlight random joke -->
 <div class="spotlight-card">
   <div class="spotlight-inner" onclick="newSpotlight()" title="Click for a new one">
     <div class="spotlight-label">✦ Tonight's Feature</div>
@@ -525,191 +729,196 @@ body.light .panel{background:var(--bg1)}
   <div class="footer-right" id="footerLang">GR mode</div>
 </footer>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ── STATE ──
 let lang = 'gr';
 let activeCategory = 'all';
 let shuffled = false;
 let jokeOrder = [];
+let isDark = true;
 
-// ── CATEGORIES ──
+// COLOR PALETTES
+const palettes = {
+  gold:   { label:'Gold',   dark:['#e8c96d','#f5dfa0','rgba(232,201,109,.08)','rgba(232,201,109,.18)'], light:['#a07820','#c09030','rgba(160,120,32,.08)','rgba(160,120,32,.14)'], dots:['#e8c96d','#f5dfa0','#a07820'] },
+  rose:   { label:'Rose',   dark:['#e87d9a','#f5a8bc','rgba(232,125,154,.08)','rgba(232,125,154,.18)'], light:['#b83060','#d04070','rgba(184,48,96,.08)','rgba(184,48,96,.14)'],  dots:['#e87d9a','#f5a8bc','#b83060'] },
+  teal:   { label:'Teal',   dark:['#5dcfcf','#8fe8e8','rgba(93,207,207,.08)','rgba(93,207,207,.18)'],  light:['#1a8080','#2a9a9a','rgba(26,128,128,.08)','rgba(26,128,128,.14)'], dots:['#5dcfcf','#8fe8e8','#1a8080'] },
+  violet: { label:'Violet', dark:['#b48ef5','#d0b8ff','rgba(180,142,245,.08)','rgba(180,142,245,.18)'],light:['#6030b0','#7a40c8','rgba(96,48,176,.08)','rgba(96,48,176,.14)'],  dots:['#b48ef5','#d0b8ff','#6030b0'] },
+  ember:  { label:'Ember',  dark:['#f5926a','#f5b89a','rgba(245,146,106,.08)','rgba(245,146,106,.18)'],light:['#c04020','#d85030','rgba(192,64,32,.08)','rgba(192,64,32,.14)'],  dots:['#f5926a','#f5b89a','#c04020'] },
+  sage:   { label:'Sage',   dark:['#86c98a','#b0e0b4','rgba(134,201,138,.08)','rgba(134,201,138,.18)'],light:['#2a6e30','#3a8040','rgba(42,110,48,.08)','rgba(42,110,48,.14)'],  dots:['#86c98a','#b0e0b4','#2a6e30'] },
+};
+let activePalette = 'gold';
+
+function applyPalette(key) {
+  activePalette = key;
+  const p = palettes[key];
+  const v = isDark ? p.dark : p.light;
+  const r = document.documentElement;
+  r.style.setProperty('--accent',      v[0]);
+  r.style.setProperty('--accent2',     v[1]);
+  r.style.setProperty('--accent-dim',  v[2]);
+  r.style.setProperty('--accent-glow', v[3]);
+  r.style.setProperty('--gold',        v[0]);
+  r.style.setProperty('--gold2',       v[1]);
+  r.style.setProperty('--gold-dim',    v[2]);
+  r.style.setProperty('--gold-glow',   v[3]);
+  const lineA = v[2].replace('.08)','.1)');
+  const lineB = v[2].replace('.08)','.2)');
+  r.style.setProperty('--line',  lineA);
+  r.style.setProperty('--line2', lineB);
+  buildPaletteUI();
+}
+
+function buildPaletteUI() {
+  const el = document.getElementById('palettes');
+  el.innerHTML = Object.entries(palettes).map(([k,p]) => `
+    <button class="palette-btn${activePalette===k?' active':''}" onclick="applyPalette('${k}')">
+      <div class="palette-dots">
+        ${p.dots.map(d=>`<div class="palette-dot" style="background:${d}"></div>`).join('')}
+      </div>
+      <span class="palette-name">${p.label}</span>
+    </button>
+  `).join('');
+}
+
 const cats = {
-  all:'All',
-  tech:'Tech',
-  life:'Life',
-  moti:'Motivation',
-  food:'Food',
-  social:'Social',
-  absurd:'Absurd',
-  gr:'Greek'
+  all:'All', tech:'Tech', life:'Life', moti:'Motivation',
+  food:'Food', social:'Social', absurd:'Absurd', gr:'Greek'
 };
 
-// ── JOKES DATA ──
 const jokes = [
-{en:"My WiFi has more mood swings than me.",gr:"Το WiFi έχει περισσότερες αλλαγές διάθεσης από εμένα.",c:"tech"},
-{en:"My laptop fan sounds like it's judging me.",gr:"Ο ανεμιστήρας του laptop με κρίνει.",c:"tech"},
-{en:"I clicked update and lost my will to live.",gr:"Πάτησα update και έχασα τη θέληση για ζωή.",c:"tech"},
-{en:"My phone knows my secrets better than I do.",gr:"Το κινητό ξέρει τα μυστικά μου καλύτερα από εμένα.",c:"tech"},
-{en:"My passwords are emotionally damaged.",gr:"Οι κωδικοί μου είναι συναισθηματικά τραυματισμένοι.",c:"tech"},
-{en:"I open settings and forget why I exist.",gr:"Ανοίγω settings και ξεχνάω γιατί υπάρχω.",c:"tech"},
-{en:"My browser tabs are a mental breakdown.",gr:"Τα tabs είναι ψυχολογική κατάρρευση.",c:"tech"},
-{en:"I trust autocorrect to ruin my life.",gr:"Εμπιστεύομαι το autocorrect να καταστρέψει τη ζωή μου.",c:"tech"},
-{en:"My phone battery drops faster than my motivation.",gr:"Η μπαταρία πέφτει πιο γρήγορα από το motivation.",c:"tech"},
-{en:"I scroll without purpose or direction.",gr:"Κάνω scroll χωρίς σκοπό.",c:"tech"},
-{en:"My life is a series of loading screens.",gr:"Η ζωή μου είναι loading screens.",c:"life"},
-{en:"I trip over my own thoughts.",gr:"Σκοντάφτω στις σκέψεις μου.",c:"life"},
-{en:"My existence is slightly delayed.",gr:"Η ύπαρξή μου είναι καθυστερημένη.",c:"life"},
-{en:"I exist in low resolution reality.",gr:"Υπάρχω σε low resolution.",c:"life"},
-{en:"My plans expire faster than milk.",gr:"Τα σχέδιά μου λήγουν πιο γρήγορα από το γάλα.",c:"life"},
-{en:"I lose keys and confidence equally fast.",gr:"Χάνω κλειδιά και αυτοπεποίθηση το ίδιο γρήγορα.",c:"life"},
-{en:"Life gave me notifications but no instructions.",gr:"Η ζωή μου έδωσε notifications χωρίς οδηγίες.",c:"life"},
-{en:"I reboot my personality daily.",gr:"Κάνω reboot στην προσωπικότητα μου καθημερινά.",c:"life"},
-{en:"Reality feels like a glitchy simulation.",gr:"Η πραγματικότητα είναι glitchy simulation.",c:"life"},
-{en:"I survive purely on accident.",gr:"Επιβιώνω καθαρά από τύχη.",c:"life"},
-{en:"My motivation left the chat permanently.",gr:"Το motivation έφυγε μόνιμα.",c:"moti"},
-{en:"I plan to succeed tomorrow again.",gr:"Σχεδιάζω να πετύχω αύριο πάλι.",c:"moti"},
-{en:"I work best under imaginary pressure.",gr:"Δουλεύω καλύτερα σε φανταστική πίεση.",c:"moti"},
-{en:"My ambition is on airplane mode.",gr:"Η φιλοδοξία είναι airplane mode.",c:"moti"},
-{en:"I delay everything professionally.",gr:"Καθυστερώ τα πάντα επαγγελματικά.",c:"moti"},
-{en:"My goals are still loading.",gr:"Οι στόχοι φορτώνουν ακόμα.",c:"moti"},
-{en:"I wake up tired in advance.",gr:"Ξυπνάω κουρασμένος από πριν.",c:"moti"},
-{en:"Success feels like a bug I can't trigger.",gr:"Η επιτυχία είναι bug.",c:"moti"},
-{en:"I almost become productive daily.",gr:"Σχεδόν γίνομαι παραγωγικός καθημερινά.",c:"moti"},
-{en:"My energy is permanently low battery.",gr:"Η ενέργεια είναι low battery.",c:"moti"},
-{en:"I cook like it's experimental science.",gr:"Μαγειρεύω σαν πείραμα.",c:"food"},
-{en:"My fridge is a museum of leftovers.",gr:"Το ψυγείο είναι μουσείο leftovers.",c:"food"},
-{en:"I eat emotionally and frequently.",gr:"Τρώω συναισθηματικά και συχνά.",c:"food"},
-{en:"My diet is fictional.",gr:"Η δίαιτα μου είναι φανταστική.",c:"food"},
-{en:"I open snacks like loot boxes.",gr:"Ανοίγω snacks σαν loot boxes.",c:"food"},
-{en:"Cooking instructions are optional to me.",gr:"Οι οδηγίες μαγειρικής είναι προαιρετικές.",c:"food"},
-{en:"I burn water sometimes.",gr:"Καίω ακόμα και το νερό.",c:"food"},
-{en:"My kitchen is chaos theory.",gr:"Η κουζίνα είναι chaos theory.",c:"food"},
-{en:"I snack like it's a hobby.",gr:"Τσιμπολογάω σαν hobby.",c:"food"},
-{en:"Food tastes better at midnight.",gr:"Το φαγητό είναι καλύτερο τα μεσάνυχτα.",c:"food"},
-{en:"I reply mentally but not physically.",gr:"Απαντάω στο μυαλό αλλά όχι στην πραγματικότητα.",c:"social"},
-{en:"My social battery is always empty.",gr:"Η κοινωνική μπαταρία είναι άδεια.",c:"social"},
-{en:"I attend conversations as a background character.",gr:"Είμαι background χαρακτήρας.",c:"social"},
-{en:"I read messages and panic later.",gr:"Διαβάζω μηνύματα και πανικοβάλλομαι μετά.",c:"social"},
-{en:"I ghost even myself sometimes.",gr:"Ghostάρω ακόμα και τον εαυτό μου.",c:"social"},
-{en:"My communication skills are on vacation.",gr:"Οι επικοινωνιακές μου δεξιότητες είναι διακοπές.",c:"social"},
-{en:"I say hi and regret it instantly.",gr:"Λέω γεια και το μετανιώνω.",c:"social"},
-{en:"Small talk drains my soul.",gr:"Το small talk μου ρουφάει την ψυχή.",c:"social"},
-{en:"I overthink every emoji I send.",gr:"Υπεραναλύω κάθε emoji.",c:"social"},
-{en:"I exist in read receipts only.",gr:"Υπάρχω μόνο στα read receipts.",c:"social"},
-{en:"I argue with myself and lose.",gr:"Καβγαδίζω με τον εαυτό μου και χάνω.",c:"absurd"},
-{en:"My shadow is more productive than me.",gr:"Η σκιά μου είναι πιο παραγωγική.",c:"absurd"},
-{en:"I blinked and missed a decade.",gr:"Έκλεισα τα μάτια και έχασα μια δεκαετία.",c:"absurd"},
-{en:"Gravity feels personal today.",gr:"Η βαρύτητα είναι προσωπική σήμερα.",c:"absurd"},
-{en:"I speak fluent nonsense daily.",gr:"Μιλάω άπταιστα ανοησίες.",c:"absurd"},
-{en:"My brain has too many side quests.",gr:"Ο εγκέφαλος έχει side quests.",c:"absurd"},
-{en:"Reality is optional sometimes.",gr:"Η πραγματικότητα είναι προαιρετική.",c:"absurd"},
-{en:"I confuse dreams with plans.",gr:"Μπερδεύω όνειρα με σχέδια.",c:"absurd"},
-{en:"Time travels faster without me.",gr:"Ο χρόνος ταξιδεύει πιο γρήγορα χωρίς εμένα.",c:"absurd"},
-{en:"I exist in beta testing mode.",gr:"Υπάρχω σε beta mode.",c:"absurd"},
-{en:"My souvlaki understands me better than people.",gr:"Το σουβλάκι με καταλαβαίνει καλύτερα από ανθρώπους.",c:"gr"},
-{en:"I need coffee like Greeks need ouzo.",gr:"Χρειάζομαι καφέ όπως οι Έλληνες ούζο.",c:"gr"},
-{en:"My life is like traffic in Athens.",gr:"Η ζωή μου είναι σαν κίνηση στην Αθήνα.",c:"gr"},
-{en:"I wait for buses that never arrive.",gr:"Περιμένω λεωφορεία που δεν έρχονται.",c:"gr"},
-{en:"My WiFi is slower than Greek bureaucracy.",gr:"Το WiFi πιο αργό από ελληνική γραφειοκρατία.",c:"gr"},
-{en:"I argue like I'm in a Greek tavern debate.",gr:"Καβγαδίζω σαν σε ελληνικό καφενείο.",c:"gr"},
-{en:"My patience is like summer in Athens — short.",gr:"Η υπομονή μου είναι σαν καλοκαίρι στην Αθήνα.",c:"gr"},
-{en:"I nap like it's a Greek tradition.",gr:"Κοιμάμαι σαν ελληνική παράδοση.",c:"gr"},
-{en:"My schedule is more flexible than gyro bread.",gr:"Το πρόγραμμα μου πιο flexible από πίτα γύρο.",c:"gr"},
-{en:"I live one tzatziki away from happiness.",gr:"Είμαι ένα τζατζίκι μακριά από ευτυχία.",c:"gr"},
-{en:"My morning alarm is just a suggestion.",gr:"Το ξυπνητήρι μου είναι απλώς πρόταση.",c:"life"},
-{en:"I have strong opinions on napping.",gr:"Έχω ισχυρές απόψεις για τον μεσημεριανό ύπνο.",c:"life"},
-{en:"My to-do list has its own to-do list.",gr:"Η λίστα μου έχει τη δική της λίστα.",c:"moti"},
-{en:"I peaked during a nap once.",gr:"Κορυφώθηκα κάποτε κατά τη διάρκεια ύπνου.",c:"moti"},
-{en:"My inner monologue needs subtitles.",gr:"Ο εσωτερικός μου μονόλογος χρειάζεται υπότιτλους.",c:"absurd"},
-{en:"I speak three languages: sarcasm, silence, and sighing.",gr:"Μιλάω τρεις γλώσσες: σαρκασμό, σιωπή, αναστεναγμό.",c:"social"},
-{en:"My resting face means I'm fine.",gr:"Η έκφρασή μου σημαίνει ότι είμαι εντάξει.",c:"social"},
-{en:"I have a black belt in overthinking.",gr:"Έχω μαύρη ζώνη στο υπερβολικό σκέφτεσθαι.",c:"absurd"},
-{en:"My attention span has left the building.",gr:"Η προσοχή μου έχει φύγει από το κτίριο.",c:"tech"},
-{en:"I forgot what I was going to say and I'm fine with it.",gr:"Ξέχασα τι ήθελα να πω και το αποδέχομαι.",c:"life"},
-{en:"My bed understands me on a spiritual level.",gr:"Το κρεβάτι μου με καταλαβαίνει πνευματικά.",c:"life"},
-{en:"I am fluent in passive aggression.",gr:"Μιλάω άπταιστα παθητική επιθετικότητα.",c:"social"},
-{en:"My comfort zone is expanding — inward.",gr:"Η ζώνη άνεσής μου επεκτείνεται — προς τα μέσα.",c:"life"},
-{en:"I once had a plan. It was a Tuesday.",gr:"Κάποτε είχα σχέδιο. Ήταν Τρίτη.",c:"moti"},
-{en:"My personality is an acquired taste.",gr:"Η προσωπικότητά μου είναι επίκτητη γεύση.",c:"social"},
-{en:"I communicate best through long pauses.",gr:"Επικοινωνώ καλύτερα μέσω μακρών παύσεων.",c:"social"},
-{en:"My opinions are strong and poorly timed.",gr:"Οι απόψεις μου είναι ισχυρές και κακά χρονισμένες.",c:"absurd"},
-{en:"I'm not lazy, I'm horizontally motivated.",gr:"Δεν είμαι τεμπέλης, είμαι οριζόντια παρακινημένος.",c:"moti"},
-{en:"My potential is theoretical at this stage.",gr:"Το δυναμικό μου είναι θεωρητικό σε αυτό το στάδιο.",c:"moti"},
-{en:"I committed to a decision and immediately regretted it.",gr:"Δεσμεύτηκα σε μια απόφαση και αμέσως το μετάνιωσα.",c:"life"},
-{en:"My handwriting is a personal code.",gr:"Η γραφή μου είναι προσωπικός κώδικας.",c:"absurd"},
-{en:"I function on spite and strong coffee.",gr:"Λειτουργώ με πείσμα και δυνατό καφέ.",c:"life"},
-{en:"My emotional range is nap to panic.",gr:"Το συναισθηματικό μου εύρος είναι από ύπνο σε πανικό.",c:"life"},
-{en:"I gave 110% once and took a two-year break.",gr:"Έδωσα 110% μια φορά και πήρα διετή διάλειμμα.",c:"moti"},
-{en:"My life philosophy: we'll see.",gr:"Η φιλοσοφία ζωής μου: θα δούμε.",c:"life"},
-{en:"I multitask badly and efficiently.",gr:"Κάνω multitask άσχημα και αποτελεσματικά.",c:"tech"},
-{en:"My weekend plans have a 20% execution rate.",gr:"Τα σχέδια του Σαββατοκύριακου έχουν ποσοστό εκτέλεσης 20%.",c:"moti"},
-{en:"I apologize for things that haven't happened yet.",gr:"Ζητάω συγγνώμη για πράγματα που δεν έχουν γίνει ακόμα.",c:"social"},
-{en:"My mirror gives me complicated feedback.",gr:"Ο καθρέφτης μου δίνει περίπλοκη ανατροφοδότηση.",c:"absurd"},
-{en:"I dressed for the job I want: pajamas.",gr:"Ντύθηκα για τη δουλειά που θέλω: πιτζάμες.",c:"life"},
-{en:"My budget is creative fiction.",gr:"Ο προϋπολογισμός μου είναι δημιουργική φαντασία.",c:"life"},
-{en:"I have commitment issues with meal plans.",gr:"Έχω πρόβλημα δέσμευσης με τα διατροφικά πλάνα.",c:"food"},
-{en:"My alarm clock and I have a toxic relationship.",gr:"Το ξυπνητήρι μου κι εγώ έχουμε τοξική σχέση.",c:"life"},
-{en:"I exercise every January 1st. Annually.",gr:"Γυμνάζομαι κάθε 1η Ιανουαρίου. Ετησίως.",c:"moti"},
-{en:"My inbox is a horror film.",gr:"Τα εισερχόμενα μου είναι ταινία τρόμου.",c:"tech"},
-{en:"I make to-do lists to feel alive.",gr:"Φτιάχνω λίστες για να νιώθω ζωντανός.",c:"moti"},
-{en:"My sense of direction is legendary — for being wrong.",gr:"Η αίσθηση κατεύθυνσής μου είναι θρυλική — για τα λάθη.",c:"absurd"},
-{en:"I misplace things I bought specifically not to misplace.",gr:"Χάνω πράγματα που αγόρασα ειδικά για να μην τα χάσω.",c:"life"},
-{en:"My self-control and I are estranged.",gr:"Η αυτοσυγκράτηση κι εγώ είμαστε αποξενωμένοι.",c:"life"},
-{en:"I set three alarms and ignore all of them.",gr:"Βάζω τρία ξυπνητήρια και αγνοώ και τα τρία.",c:"life"},
-{en:"My posture is a cry for help.",gr:"Η στάση μου είναι κραυγή βοήθειας.",c:"life"},
-{en:"I read the first sentence of every article.",gr:"Διαβάζω την πρώτη πρόταση κάθε άρθρου.",c:"tech"},
-{en:"My grocery list is pure ambition.",gr:"Η λίστα του σούπερ μάρκετ είναι καθαρή φιλοδοξία.",c:"food"},
-{en:"I remember dreams vividly and facts poorly.",gr:"Θυμάμαι όνειρα ζωντανά και γεγονότα άσχημα.",c:"absurd"},
-{en:"My coffee order is my personality.",gr:"Η παραγγελία καφέ είναι η προσωπικότητά μου.",c:"gr"},
-{en:"I have the memory of a goldfish for deadlines.",gr:"Έχω μνήμη χρυσόψαρου για προθεσμίες.",c:"moti"},
-{en:"My parking skills are interpretive art.",gr:"Η παρκάρισμά μου είναι ερμηνευτική τέχνη.",c:"gr"},
-{en:"I answer emails with the enthusiasm of someone under arrest.",gr:"Απαντάω email με ενθουσιασμό κρατούμενου.",c:"tech"},
-{en:"My brain shuts down after 10pm precisely.",gr:"Ο εγκέφαλός μου κλείνει ακριβώς μετά τις 10.",c:"life"},
-{en:"I have a gift for arriving five minutes late everywhere.",gr:"Έχω χάρισμα να φτάνω πέντε λεπτά αργά παντού.",c:"gr"},
-{en:"My idea of a workout is heavy thinking.",gr:"Η άσκησή μου είναι βαριά σκέψη.",c:"moti"},
-{en:"I overpack for every trip, including to the kitchen.",gr:"Πακετάρω υπερβολικά για κάθε ταξίδι, ακόμα και στην κουζίνα.",c:"life"},
-{en:"My social skills peak at exactly one drink.",gr:"Οι κοινωνικές μου δεξιότητες κορυφώνονται σε ακριβώς ένα ποτό.",c:"social"},
-{en:"I have opinions about other people's driving.",gr:"Έχω απόψεις για την οδήγηση των άλλων.",c:"gr"},
-{en:"My WiFi password is my one secret.",gr:"Ο κωδικός WiFi είναι το μοναδικό μου μυστικό.",c:"tech"},
-{en:"I aged ten years waiting for that page to load.",gr:"Γέρασα δέκα χρόνια περιμένοντας τη σελίδα.",c:"tech"},
-{en:"My relationship with Mondays is officially over.",gr:"Η σχέση μου με τις Δευτέρες τελείωσε επίσημα.",c:"life"},
-{en:"I survive on nostalgia and carbohydrates.",gr:"Επιβιώνω από νοσταλγία και υδατάνθρακες.",c:"food"},
-{en:"My internal clock runs on Mediterranean time.",gr:"Το εσωτερικό μου ρολόι τρέχει σε μεσογειακή ώρα.",c:"gr"},
-{en:"I have a complicated relationship with vegetables.",gr:"Έχω περίπλοκη σχέση με τα λαχανικά.",c:"food"},
-{en:"My handshake has been called memorable for the wrong reasons.",gr:"Η χειραψία μου αποκλήθηκε αξέχαστη για λάθος λόγους.",c:"social"},
-{en:"I take criticism well — on the outside.",gr:"Δέχομαι κριτική καλά — εξωτερικά.",c:"social"},
-{en:"My vacation mode is permanently on.",gr:"Η λειτουργία διακοπών είναι μόνιμα ενεργοποιημένη.",c:"life"},
-{en:"I answer 'I don't know' with great confidence.",gr:"Απαντάω 'δεν ξέρω' με μεγάλη αυτοπεποίθηση.",c:"absurd"},
-{en:"My Google history is a psychological profile.",gr:"Το ιστορικό Google μου είναι ψυχολογικό προφίλ.",c:"tech"},
-{en:"I leave the house five minutes after I should have.",gr:"Φεύγω από το σπίτι πέντε λεπτά αφού έπρεπε.",c:"life"},
-{en:"My phone has 3000 photos, mostly of food.",gr:"Το κινητό μου έχει 3000 φωτογραφίες, κυρίως φαγητό.",c:"food"},
-{en:"I clean the house only when someone is coming over.",gr:"Καθαρίζω μόνο όταν έρχεται κάποιος.",c:"life"},
-{en:"My snooze button gets more use than my gym shoes.",gr:"Το snooze χρησιμοποιείται περισσότερο από τα αθλητικά μου.",c:"moti"},
-{en:"I apologize to furniture when I bump into it.",gr:"Ζητάω συγγνώμη στα έπιπλα όταν τα χτυπάω.",c:"absurd"},
-{en:"My sunglasses are on even in winter.",gr:"Τα γυαλιά μου είναι πάντα παρόντα, ακόμα και τον χειμώνα.",c:"gr"},
-{en:"I own seventeen mugs and use one.",gr:"Έχω δεκαεπτά κούπες και χρησιμοποιώ μία.",c:"life"},
-{en:"My biggest fear is an unexpected phone call.",gr:"Ο μεγαλύτερος φόβος μου είναι απρόσμενη κλήση.",c:"social"},
-{en:"I have started the same book four times.",gr:"Έχω αρχίσει το ίδιο βιβλίο τέσσερις φορές.",c:"life"},
-{en:"My cooking experiments end in ordering delivery.",gr:"Τα μαγειρικά πειράματα καταλήγουν σε delivery.",c:"food"},
-{en:"I say 'almost ready' for approximately forty minutes.",gr:"Λέω 'σχεδόν έτοιμος' για περίπου σαράντα λεπτά.",c:"gr"},
-{en:"My handwriting is a lost dialect.",gr:"Η γραφή μου είναι χαμένη διάλεκτος.",c:"absurd"},
-{en:"I have a sixth sense for when food is nearby.",gr:"Έχω έκτη αίσθηση για το κοντινό φαγητό.",c:"food"},
-{en:"My philosophy of life: there is always dessert.",gr:"Η φιλοσοφία ζωής μου: υπάρχει πάντα επιδόρπιο.",c:"food"},
-{en:"I give advice I never follow.",gr:"Δίνω συμβουλές που δεν ακολουθώ ποτέ.",c:"absurd"},
-{en:"My sense of time is pure poetry.",gr:"Η αίσθηση χρόνου μου είναι καθαρή ποίηση.",c:"absurd"},
-{en:"I have the energy of someone who slept fine but didn't.",gr:"Έχω ενέργεια κάποιου που κοιμήθηκε καλά αλλά δεν κοιμήθηκε.",c:"life"},
-{en:"My plans for the weekend survived until Saturday morning.",gr:"Τα σχέδια για το Σαββατοκύριακο επέζησαν μέχρι το Σάββατο πρωί.",c:"life"},
+// TECH
+{en:"I told my WiFi it was slow. It said, 'I'm not slow, I'm building suspense.' Then it cut out entirely.",gr:"Είπα στο WiFi ότι είναι αργό. Μου είπε: 'Δεν είμαι αργό, χτίζω αγωνία.' Και μετά έκοψε εντελώς.",c:"tech"},
+{en:"My laptop fan turns on every time I open a spreadsheet. I think it's trying to cool down my life choices.",gr:"Ο ανεμιστήρας ανάβει κάθε φορά που ανοίγω Excel. Νομίζω προσπαθεί να ψύξει τις επιλογές μου στη ζωή.",c:"tech"},
+{en:"Clicked 'Update Now' at 8pm. Woke up at 7am to a blue screen asking me to choose a keyboard language. I picked Greek. Felt appropriate.",gr:"Πάτησα 'Ενημέρωση Τώρα' στις 8 το βράδυ. Ξύπνησα στις 7 με μπλε οθόνη να μου ζητά γλώσσα πληκτρολογίου. Έβαλα Ελληνικά. Ταίριαζε.",c:"tech"},
+{en:"My phone has 47 browser tabs open. I don't know what any of them are. I'm afraid to close them. One might be important.",gr:"Έχω 47 καρτέλες ανοιχτές στο κινητό. Δεν ξέρω τι είναι καμία. Φοβάμαι να κλείσω. Μία μπορεί να είναι σημαντική.",c:"tech"},
+{en:"My password got rejected for not having a number, a symbol, a capital letter, and the tears of a software engineer. I'm working on the last part.",gr:"Ο κωδικός μου απορρίφθηκε γιατί δεν είχε αριθμό, σύμβολο, κεφαλαίο και τα δάκρυα ενός developer. Δουλεύω στο τελευταίο.",c:"tech"},
+{en:"Sent an email to the wrong person. Hit recall. They got the recall notification too. Then I sent an apology. To the wrong person again.",gr:"Έστειλα email στο λάθος άτομο. Ανάκληση. Πήραν και την ειδοποίηση ανάκλησης. Έστειλα συγγνώμη. Πάλι στο λάθος άτομο.",c:"tech"},
+{en:"My browser crashed and I lost seventeen tabs. I felt like I'd lost seventeen conversations I was never going to have anyway, but still.",gr:"Κρασάρισε το browser και έχασα δεκαεπτά καρτέλες. Ένιωσα ότι έχασα δεκαεπτά συνομιλίες που δεν θα είχα ποτέ, αλλά παρόλα αυτά.",c:"tech"},
+{en:"Autocorrect changed 'omw' to 'on my way' and now everyone thinks I'm reliable. I'm not. I was texting from my bed.",gr:"Το autocorrect άλλαξε 'ερχ' σε 'έρχομαι' κι όλοι νομίζουν ότι είμαι αξιόπιστος. Δεν είμαι. Έστελνα από το κρεβάτι.",c:"tech"},
+{en:"Asked my smart speaker for the weather. It played a song from 2007. I listened to the whole thing. We don't talk about it.",gr:"Ρώτησα το smart speaker για τον καιρό. Έπαιξε ένα τραγούδι του 2007. Το άκουσα ολόκληρο. Δεν το συζητάμε.",c:"tech"},
+{en:"My phone battery dropped from 20% to 3% in the time it took me to look for a charger. It was watching me the whole time.",gr:"Η μπαταρία έπεσε από 20% σε 3% στο χρόνο που ψάχνω φορτιστή. Με παρακολουθούσε όλη την ώρα.",c:"tech"},
+// LIFE
+{en:"My morning alarm goes off at 7. My backup goes off at 7:05. My 'okay now I mean it' alarm goes off at 7:30. I've been late every day this week.",gr:"Το ξυπνητήρι χτυπά στις 7. Το backup στις 7:05. Το 'εντάξει τώρα σοβαρεύομαι' στις 7:30. Αργώ κάθε μέρα αυτή την εβδομάδα.",c:"life"},
+{en:"I made a to-do list, then added 'make to-do list' to it just so I could cross something off immediately.",gr:"Έφτιαξα λίστα υποχρεώσεων, μετά έγραψα 'φτιάξε λίστα' για να διαγράψω κάτι αμέσως.",c:"life"},
+{en:"Bought a planner in January. Used it for two weeks. Found it in September. It still smells like ambition.",gr:"Αγόρασα ημερολόγιο τον Ιανουάριο. Το χρησιμοποίησα δύο εβδομάδες. Το βρήκα τον Σεπτέμβριο. Ακόμα μυρίζει φιλοδοξία.",c:"life"},
+{en:"I cleaned the entire apartment. My friend cancelled. The apartment got messy again out of spite.",gr:"Καθάρισα όλο το διαμέρισμα. Ο φίλος μου ακύρωσε. Το διαμέρισμα βρώμισε πάλι από πείσμα.",c:"life"},
+{en:"Left the house and immediately forgot if I locked the door. Turned back. It was locked. Got in the car. Forgot again. This happened four times.",gr:"Έφυγα και αμέσως ξέχασα αν κλείδωσα. Γύρισα πίσω. Ήταν κλειδωμένο. Πήγα στο αυτοκίνητο. Ξέχασα πάλι. Τέσσερις φορές.",c:"life"},
+{en:"I said 'I'll just rest my eyes for five minutes.' Three hours later my family was standing over me like a Renaissance painting.",gr:"Είπα 'θα ξεκουράσω λίγο τα μάτια μου'. Τρεις ώρες αργότερα η οικογένεια στεκόταν πάνω μου σαν πίνακας Αναγέννησης.",c:"life"},
+{en:"My grocery list was very reasonable. I returned home with snacks I don't remember choosing and none of what I went for.",gr:"Η λίστα του σούπερ μάρκετ ήταν λογική. Γύρισα με σνακ που δεν θυμάμαι να διάλεξα και τίποτα από αυτά που ήθελα.",c:"life"},
+{en:"Opened a drawer looking for scissors. Found three pens, a receipt from 2019, and a mystery object I've decided not to identify.",gr:"Άνοιξα ένα συρτάρι για ψαλίδι. Βρήκα τρία στυλό, απόδειξη από το 2019, και ένα αντικείμενο που αποφάσισα να μην ταυτοποιήσω.",c:"life"},
+{en:"Told myself I'd be in bed by 11. At 11:15 I was watching a documentary about the postal service of 17th century Amsterdam. Completely gripped.",gr:"Είπα θα κοιμηθώ στις 11. Στις 11:15 έβλεπα ντοκιμαντέρ για το ταχυδρομείο του Άμστερνταμ τον 17ο αιώνα. Απόλυτα συναρπαστικό.",c:"life"},
+{en:"I set three alarms and still woke up to a fourth one I had no memory of setting. My past self is trying to help my future self and consistently failing.",gr:"Έβαλα τρία ξυπνητήρια και ξύπνησα σε ένα τέταρτο που δεν θυμάμαι. Ο παλιός μου εαυτός προσπαθεί να σώσει τον μελλοντικό και αποτυγχάνει συνεχώς.",c:"life"},
+// MOTIVATION
+{en:"My gym membership is technically active. So am I, technically, if you count scrolling as cardio.",gr:"Η συνδρομή στο γυμναστήριο είναι τεχνικά ενεργή. Κι εγώ τεχνικά είμαι ενεργός, αν μετράει το scrolling ως cardio.",c:"moti"},
+{en:"I start every Monday with a fresh plan. By Wednesday I'm just a person eating crackers in the dark.",gr:"Ξεκινώ κάθε Δευτέρα με νέο σχέδιο. Μέχρι την Τετάρτη είμαι απλά ένας άνθρωπος που τρώει κράκερ στο σκοτάδι.",c:"moti"},
+{en:"I have a five-year plan. It's mostly just the word 'somehow' written in different fonts.",gr:"Έχω πενταετές σχέδιο. Είναι κυρίως η λέξη 'κάπως' γραμμένη σε διαφορετικές γραμματοσειρές.",c:"moti"},
+{en:"Motivation is like my phone charger. I know it's somewhere in the house. I just can't find it when I actually need it.",gr:"Το κίνητρο είναι σαν το φορτιστή μου. Ξέρω ότι είναι κάπου στο σπίτι. Απλά δεν το βρίσκω όταν το χρειάζομαι.",c:"moti"},
+{en:"I signed up for a marathon. Not to run it — just to see if getting the confirmation email would make me feel athletic. It did, briefly.",gr:"Γράφτηκα σε μαραθώνιο. Όχι για να τρέξω — μόνο για να δω αν η επιβεβαίωση θα με έκανε να νιώσω αθλητικός. Με έκανε, σύντομα.",c:"moti"},
+{en:"My goal this year was to learn a new skill. I watched fourteen tutorial videos. I feel like that counts as research.",gr:"Ο στόχος μου φέτος ήτανε να μάθω μια νέα δεξιότητα. Είδα δεκατέσσερα βίντεο-οδηγούς. Νομίζω αυτό μετράει ως έρευνα.",c:"moti"},
+{en:"I was very productive last Tuesday. I still mention it in conversations as evidence that I'm capable of things.",gr:"Ήμουν πολύ παραγωγικός την περασμένη Τρίτη. Το αναφέρω ακόμα σε συζητήσεις ως απόδειξη ότι μπορώ να κάνω πράγματα.",c:"moti"},
+// FOOD
+{en:"My diet started on Monday. By Tuesday lunch I had negotiated with myself that cheese doesn't count if it's on top of something.",gr:"Η δίαιτα άρχισε Δευτέρα. Μεσημέρι Τρίτης είχα διαπραγματευτεί με τον εαυτό μου ότι το τυρί δεν μετράει αν είναι από πάνω σε κάτι.",c:"food"},
+{en:"I made pasta for dinner. It was going well until I added 'just a little more' cheese six consecutive times. No regrets.",gr:"Έφτιαξα ζυμαρικά για βραδινό. Πήγαινε καλά μέχρι που έβαλα 'λίγο ακόμα' τυρί έξι φορές στη σειρά. Δεν μετανιώ.",c:"food"},
+{en:"Ordered delivery and watched the driver on the map for twenty minutes. He parked outside. I kept watching anyway. It's surprisingly gripping content.",gr:"Παρήγγειλα delivery και παρακολούθησα τον οδηγό στον χάρτη για είκοσι λεπτά. Παρκάρισε έξω. Συνέχισα να κοιτάω. Εκπληκτικά συναρπαστικό.",c:"food"},
+{en:"My fridge holds three things: leftovers I intend to eat, leftovers I've forgotten about, and one yogurt that gives me hope.",gr:"Το ψυγείο μου έχει τρία πράγματα: υπολείμματα που σκοπεύω να φάω, υπολείμματα που ξέχασα, και ένα γιαούρτι που μου δίνει ελπίδα.",c:"food"},
+{en:"I followed a recipe exactly and it still looked nothing like the photo. The photo had professional lighting and, I suspect, no actual food in it.",gr:"Ακολούθησα συνταγή ακριβώς και δεν έμοιαζε καθόλου με τη φωτογραφία. Η φωτογραφία είχε επαγγελματικό φωτισμό και, υποψιάζομαι, καθόλου φαγητό.",c:"food"},
+{en:"Ate dinner at 7. Got hungry again at 10:30. Negotiated with my body. Lost. Had a full second dinner. My body is not reasonable.",gr:"Έφαγα βραδινό στις 7. Πείνασα πάλι στις 10:30. Διαπραγματεύτηκα με το σώμα μου. Έχασα. Έφαγα δεύτερο πλήρες βραδινό. Το σώμα μου δεν είναι λογικό.",c:"food"},
+{en:"Made coffee, forgot it existed, found it cold, microwaved it, forgot it again. Happened twice. I never actually drank the coffee.",gr:"Έφτιαξα καφέ, τον ξέχασα, τον βρήκα κρύο, τον ζέστανα, τον ξέχασα πάλι. Δύο φορές. Δεν ήπια ποτέ τον καφέ.",c:"food"},
+{en:"Bought vegetables for a healthy week. Used one. The rest watched me order pizza from inside the crisper drawer.",gr:"Αγόρασα λαχανικά για υγιεινή εβδομάδα. Χρησιμοποίησα ένα. Τα υπόλοιπα με κοίταζαν να παραγγέλνω πίτσα από το συρτάρι.",c:"food"},
+// SOCIAL
+{en:"Someone called me unexpectedly. I watched the phone ring like it was a nature documentary. It rang out. I texted 'everything okay?' immediately after.",gr:"Κάποιος με πήρε τηλέφωνο ξαφνικά. Κοίταζα το κινητό σαν ντοκιμαντέρ φύσης. Χτύπησε και σταμάτησε. Έγραψα 'όλα καλά;' αμέσως μετά.",c:"social"},
+{en:"I said I'd be there at eight. I left the house at eight. I arrived at eight forty. I said 'the traffic was insane.' There was no traffic.",gr:"Είπα θα είμαι εκεί στις οχτώ. Έφυγα στις οχτώ. Έφτασα στις οχτώ και σαράντα. Είπα 'ήταν τρελή κίνηση'. Δεν υπήρχε κίνηση.",c:"social"},
+{en:"Spent fifteen minutes composing a text. Deleted it. Typed it again. Deleted it. Sent a thumbs up emoji. This is the only communication I'm capable of now.",gr:"Πέρασα δεκαπέντε λεπτά γράφοντας μήνυμα. Το έσβησα. Το έγραψα πάλι. Το έσβησα. Έστειλα ένα 👍. Αυτή είναι η μόνη επικοινωνία που μπορώ πλέον.",c:"social"},
+{en:"Made a joke in a group chat. Nobody reacted for four minutes. I started typing a follow-up explaining the joke. Deleted it. Left the chat.",gr:"Έκανα αστείο στο group chat. Κανείς δεν αντέδρασε για τέσσερα λεπτά. Άρχισα να εξηγώ το αστείο. Το έσβησα. Έφυγα από το group.",c:"social"},
+{en:"Got invited to a party. Said yes because saying no felt rude. Spent three days hoping it would be cancelled. It wasn't. I went. Had a great time. Very annoying.",gr:"Με κάλεσαν σε πάρτι. Είπα ναι γιατί το όχι φαινόταν αγένεια. Τρεις μέρες ελπίζοντας να ακυρωθεί. Δεν ακυρώθηκε. Πήγα. Πέρασα τέλεια. Πολύ ενοχλητικό.",c:"social"},
+{en:"Ran into someone I vaguely know. We had the 'we should catch up soon' conversation. We both know it won't happen. It's a polite ritual and I respect it.",gr:"Συνάντησα κάποιον που ξέρω αμυδρά. Είπαμε 'πρέπει να βρεθούμε σύντομα'. Ξέρουμε και οι δυο ότι δεν θα γίνει. Είναι τελετουργία ευγένειας και την σέβομαι.",c:"social"},
+// ABSURD
+{en:"I argued with myself about whether I was hungry. I won. I also lost. I ended up eating cereal standing over the sink at 11pm, which was what I wanted the whole time.",gr:"Μάλωσα με τον εαυτό μου αν πεινάω. Κέρδισα. Έχασα επίσης. Κατέληξα να τρώω δημητριακά όρθιος στο νεροχύτη στις 11, που ήθελα εξαρχής.",c:"absurd"},
+{en:"I tripped over nothing on an empty sidewalk. A pigeon witnessed it. We made eye contact. Neither of us spoke of it again.",gr:"Σκόνταψα στο κενό σε άδειο πεζοδρόμιο. Ένα περιστέρι το είδε. Κάναμε οπτική επαφή. Κανείς δεν το ανέφερε ξανά.",c:"absurd"},
+{en:"Spent twenty minutes looking for my phone while using it as a flashlight to search. My brain is doing its best.",gr:"Πέρασα είκοσι λεπτά ψάχνοντας το κινητό μου ενώ το χρησιμοποιούσα ως φακό για να ψάχνω. Ο εγκέφαλός μου κάνει ό,τι μπορεί.",c:"absurd"},
+{en:"Opened the fridge, stared for thirty seconds, closed it, then opened it forty seconds later as if something might have changed. It hadn't.",gr:"Άνοιξα το ψυγείο, κοίταξα για τριάντα δευτερόλεπτα, το έκλεισα, και το ξανάνοιξα σαράντα δευτερόλεπτα μετά μήπως κάτι άλλαξε. Δεν άλλαξε.",c:"absurd"},
+{en:"I rehearsed a conversation in my head for three days. When it happened, I said the one thing I hadn't planned and it went fine. I resent this deeply.",gr:"Πρόβαρα μια συζήτηση στο μυαλό μου για τρεις μέρες. Όταν έγινε, είπα το μόνο που δεν είχα σχεδιάσει και πήγε καλά. Το μισώ αυτό βαθιά.",c:"absurd"},
+{en:"I waved back at someone who wasn't waving at me. They watched me do it. I fully committed. I waved with confidence and walked away with dignity.",gr:"Έκανα νόημα σε κάποιον που δεν μου έκανε νόημα. Με είδε. Δεσμεύτηκα πλήρως. Έκανα νόημα με αυτοπεποίθηση και έφυγα με αξιοπρέπεια.",c:"absurd"},
+{en:"Asked myself 'what was I just about to do?' Could not remember. Stood there. Sat down. Remembered the moment I sat. Stood right back up.",gr:"Ρώτησα τον εαυτό μου 'τι ήθελα να κάνω;' Δεν θυμόμουν. Στάθηκα. Κάθισα. Θυμήθηκα μόλις κάθισα. Σηκώθηκα ξανά αμέσως.",c:"absurd"},
+// GREEK
+{en:"My grandmother called to ask if I ate. I had just finished eating. She told me to eat more. This exact conversation has taken place every Sunday for thirty years.",gr:"Η γιαγιά τηλεφώνησε να ρωτήσει αν έφαγα. Μόλις είχα τελειώσει. Μου είπε να φάω κι άλλο. Αυτή η ακριβής συζήτηση γίνεται κάθε Κυριακή εδώ και τριάντα χρόνια.",c:"gr"},
+{en:"Ordered a Greek coffee. The cup arrived with grounds at the bottom that, according to my aunt, spelled out that I should stop renting and buy a house.",gr:"Παρήγγειλα ελληνικό καφέ. Η κούπα ήρθε με κατακάθι που, κατά τη θεία μου, έλεγε να σταματήσω να νοικιάζω και να αγοράσω σπίτι.",c:"gr"},
+{en:"I told my Greek mother I wasn't hungry. She made food anyway, described every step while making it, and placed it in front of me with a look that was not optional.",gr:"Είπα στη μαμά μου ότι δεν πεινάω. Μαγείρεψε παρόλα αυτά, το περιέγραφε καθώς το έφτιαχνε, και το έβαλε μπροστά μου με ένα βλέμμα που δεν ήταν προαιρετικό.",c:"gr"},
+{en:"Went to a family lunch 'just for an hour.' Checked my phone. It was eight in the evening. Baklava had appeared at some point. Nobody knew when.",gr:"Πήγα σε οικογενειακό μεσημεριανό 'μόνο για μια ώρα'. Κοίταξα το κινητό. Ήταν οχτώ το βράδυ. Ο μπακλαβάς είχε εμφανιστεί κάποια στιγμή. Κανείς δεν ήξερε πότε.",c:"gr"},
+{en:"In Greece, 'five minutes' is a unit of time that means anything from two minutes to four hours. It is agreed upon by everyone and questioned by no one.",gr:"Στην Ελλάδα, 'πέντε λεπτά' είναι μονάδα χρόνου που σημαίνει οτιδήποτε από δύο λεπτά έως τέσσερις ώρες. Συμφωνούν όλοι και δεν το αμφισβητεί κανείς.",c:"gr"},
+{en:"My uncle at every family gathering: 'Do you know what you want to do with your life?' Me, same answer for fifteen years: 'Still figuring it out.' Him: 'Good, good.'",gr:"Ο θείος μου σε κάθε οικογενειακή συγκέντρωση: 'Ξέρεις τι θέλεις να κάνεις;' Εγώ, ίδια απάντηση επί δεκαπέντε χρόνια: 'Ακόμα ψάχνω.' Αυτός: 'Καλά, καλά.'",c:"gr"},
+{en:"There are two types of Greek drivers: those who honk the moment the light turns green, and those who were about to honk but someone else did it first.",gr:"Υπάρχουν δύο τύποι Ελλήνων οδηγών: αυτοί που κορνάρουν αμέσως στο πράσινο, και αυτοί που ήταν να κορνάρουν αλλά τους πρόλαβε άλλος.",c:"gr"},
+{en:"Greek summer rule: you don't go to the beach before noon because the sun 'isn't ready yet.' Nobody knows who decided this. Everyone follows it.",gr:"Κανόνας του ελληνικού καλοκαιριού: δεν πας παραλία πριν το μεσημέρι γιατί ο ήλιος 'δεν είναι έτοιμος ακόμα'. Κανείς δεν ξέρει ποιος το αποφάσισε. Όλοι το ακολουθούν.",c:"gr"},
+{en:"I asked for directions in a Greek village. The man gave me a seventeen-minute explanation involving a tree that 'used to be there' and a bakery that closed in 1994.",gr:"Ζήτησα οδηγίες σε ελληνικό χωριό. Ο κύριος μου έδωσε δεκαεπτά λεπτά εξήγηση με ένα δέντρο που 'ήταν εκεί παλιά' και ένα φούρνο που έκλεισε το 1994.",c:"gr"},
+{en:"My yiayia's answer to every illness, injury, bad mood, or life problem is identical: you haven't eaten, have you.",gr:"Η απάντηση της γιαγιάς μου σε κάθε αρρώστια, τραυματισμό, κακή διάθεση ή πρόβλημα ζωής είναι ίδια: δεν έχεις φάει, έτσι δεν είναι.",c:"gr"},
+// TECH — second batch
+{en:"I joined a video call five minutes early so I wouldn't be the last one. I was still somehow the last one.",gr:"Μπήκα στο video call πέντε λεπτά νωρίς για να μην είμαι ο τελευταίος. Ήμουν πάλι ο τελευταίος.",c:"tech"},
+{en:"I named a file 'final.docx'. Then 'final_v2.docx'. Then 'final_ACTUAL.docx'. Then 'final_ACTUAL_use_this_one.docx'. None of them were final.",gr:"Ονόμασα αρχείο 'final.docx'. Μετά 'final_v2.docx'. Μετά 'final_ACTUAL.docx'. Κανένα δεν ήταν τελικό.",c:"tech"},
+{en:"My phone vibrated. I checked it. Nothing. Checked again thirty seconds later. Still nothing. The phone is messing with me and we both know it.",gr:"Το κινητό δόνησε. Το κοίταξα. Τίποτα. Ξανακοίταξα μετά από τριάντα δευτερόλεπτα. Πάλι τίποτα. Το κινητό με παίζει και το ξέρουμε και οι δυο.",c:"tech"},
+{en:"I have 4,800 unread emails. I've made peace with this. The inbox is just a place things go to become someone else's problem eventually.",gr:"Έχω 4.800 αδιάβαστα email. Έχω κάνει ειρήνη με αυτό. Τα εισερχόμενα είναι απλά ένας χώρος όπου τα πράγματα πηγαίνουν να γίνουν πρόβλημα κάποιου άλλου τελικά.",c:"tech"},
+{en:"Accidentally left my camera on during a meeting. Nobody said anything. I've watched the recording back. I will not be doing that again.",gr:"Άφησα την κάμερα ανοιχτή κατά λάθος σε meeting. Κανείς δεν είπε τίποτα. Είδα την ηχογράφηση. Δεν θα το ξανακάνω αυτό.",c:"tech"},
+{en:"My phone asked if I wanted to update my password. I said yes. It asked for my old password. I don't know my old password. That's why I wanted to update it.",gr:"Το κινητό ρώτησε αν θέλω να αλλάξω κωδικό. Είπα ναι. Ζήτησε τον παλιό κωδικό. Δεν ξέρω τον παλιό κωδικό. Γι' αυτό ήθελα να τον αλλάξω.",c:"tech"},
+{en:"I have a folder on my desktop called 'Sort this later.' It was created in 2021. It has 340 files in it. It is my legacy.",gr:"Έχω φάκελο στην επιφάνεια εργασίας που λέει 'Τακτοποίηση αργότερα'. Δημιουργήθηκε το 2021. Έχει 340 αρχεία. Είναι η κληρονομιά μου.",c:"tech"},
+{en:"Someone screen-shared and we all saw their bookmarks bar. Nobody said anything. But we all saw it. These things bond people.",gr:"Κάποιος έκανε screen share και είδαμε όλοι τις αποθηκευμένες σελίδες του. Κανείς δεν είπε τίποτα. Αλλά τις είδαμε όλοι. Αυτά δένουν τους ανθρώπους.",c:"tech"},
+{en:"My keyboard has a key that opens the emoji panel. I've used it once. I typed a thumbs up. It took four minutes. I sent a word instead.",gr:"Το πληκτρολόγιό μου έχει πλήκτρο για emoji. Το χρησιμοποίησα μία φορά. Έγραψα ένα 👍. Μου πήρε τέσσερα λεπτά. Έστειλα μια λέξη αντ' αυτού.",c:"tech"},
+{en:"My smart TV asked for a firmware update. I agreed. It restarted four times. I finished my dinner. Started a podcast. It was still updating.",gr:"Η smart TV μου ζήτησε ενημέρωση. Συμφώνησα. Επανεκκινήθηκε τέσσερις φορές. Τελείωσα το δείπνο μου. Άρχισα podcast. Ακόμα ενημερωνόταν.",c:"tech"},
+// LIFE — second batch
+{en:"I told myself I'd have just one biscuit with my coffee. I had seven. I'm not going to talk about the eighth.",gr:"Είπα στον εαυτό μου ένα μπισκότο με τον καφέ. Έφαγα επτά. Δεν θα μιλήσω για το όγδοο.",c:"life"},
+{en:"I went to bed at a reasonable hour. Lay there for ninety minutes thinking about a thing I said at a party in 2014. Then I slept fine.",gr:"Πήγα για ύπνο σε λογική ώρα. Ξάπλωσα ενενήντα λεπτά σκεφτόμενος κάτι που είπα σε πάρτι το 2014. Μετά κοιμήθηκα καλά.",c:"life"},
+{en:"I checked the weather before leaving. It said sunny. I took a jacket anyway. It was sunny. I carried the jacket all day. The jacket knows what it did.",gr:"Κοίταξα τον καιρό πριν φύγω. Έλεγε ηλιοφάνεια. Πήρα μπουφάν παρόλα αυτά. Ήταν ηλιοφάνεια. Κουβάλησα το μπουφάν όλη την ημέρα. Το μπουφάν ξέρει τι έκανε.",c:"life"},
+{en:"I decided to have a quiet evening. By 9pm I had reorganised two shelves, looked up the population of Belgium, and learned something about medieval bread.",gr:"Αποφάσισα να έχω ήσυχο βράδυ. Στις 9 είχα αναδιοργανώσει δύο ράφια, ψάξει τον πληθυσμό του Βελγίου, και μάθει κάτι για το ψωμί του Μεσαίωνα.",c:"life"},
+{en:"Bought an umbrella. Hasn't rained since. I've had it for four months. I believe the umbrella is suppressing the rain out of pride.",gr:"Αγόρασα ομπρέλα. Δεν έχει βρέξει από τότε. Τη έχω τέσσερις μήνες. Πιστεύω ότι η ομπρέλα καταπνίγει τη βροχή από υπερηφάνεια.",c:"life"},
+{en:"I RSVP'd yes to an event three weeks ago. The event is tomorrow. I am only now realising this was a commitment and not just a vague intention.",gr:"Είπα ναι σε εκδήλωση πριν τρεις εβδομάδες. Η εκδήλωση είναι αύριο. Μόλις τώρα συνειδητοποιώ ότι ήταν δέσμευση και όχι απλά αόριστη πρόθεση.",c:"life"},
+{en:"I made my bed this morning. It gave me so much confidence that I did absolutely nothing else productive for the rest of the day.",gr:"Έστρωσα το κρεβάτι σήμερα το πρωί. Μου έδωσε τόση αυτοπεποίθηση που δεν έκανα τίποτα άλλο παραγωγικό για το υπόλοιπο της ημέρας.",c:"life"},
+{en:"I have a drawer full of chargers for devices I no longer own. I keep them because one day they might be relevant again. This is my retirement plan.",gr:"Έχω συρτάρι γεμάτο φορτιστές για συσκευές που δεν έχω πια. Τους κρατώ γιατί μια μέρα μπορεί να χρειαστούν. Αυτό είναι το συνταξιοδοτικό μου πλάνο.",c:"life"},
+{en:"I ran out of shampoo and used conditioner instead. My hair feels incredible. I feel like a fraud.",gr:"Μου τελείωσε το σαμπουάν και χρησιμοποίησα conditioner. Τα μαλλιά μου είναι απίστευτα. Νιώθω απατεώνας.",c:"life"},
+{en:"I lost my keys. Found them in my pocket. The pocket I checked twice. The keys were laughing. I heard nothing but I know.",gr:"Έχασα τα κλειδιά μου. Τα βρήκα στην τσέπη μου. Την τσέπη που έψαξα δύο φορές. Τα κλειδιά γελούσαν. Δεν άκουσα τίποτα αλλά ξέρω.",c:"life"},
+// MOTIVATION — second batch
+{en:"I'm not procrastinating. I'm letting the task age like a fine wine until the deadline makes it taste better.",gr:"Δεν αναβάλλω. Αφήνω το καθήκον να ωριμάσει σαν καλό κρασί μέχρι η προθεσμία να το κάνει πιο νόστιμο.",c:"moti"},
+{en:"I told myself I'd start after this episode. Then after the next. Then after 'just the one after that.' The series ended. I did not start.",gr:"Είπα στον εαυτό μου θα αρχίσω μετά από αυτό το επεισόδιο. Μετά το επόμενο. Μετά 'μόνο το ένα μετά'. Η σειρά τελείωσε. Δεν άρχισα.",c:"moti"},
+{en:"The trick to productivity is momentum. Once you start you can't stop. I have not started. This is now year four of not starting.",gr:"Το κλειδί της παραγωγικότητας είναι η ορμή. Μόλις ξεκινάς δεν σταματάς. Δεν έχω ξεκινήσει. Είναι τώρα τέταρτο χρόνο που δεν ξεκινώ.",c:"moti"},
+{en:"I wrote 'call the dentist' on my to-do list in January. It's still there. I've rewritten the list four times. I keep transferring it. The dentist doesn't know I exist.",gr:"Έγραψα 'πάρε τηλέφωνο οδοντίατρο' στη λίστα τον Ιανουάριο. Είναι ακόμα εκεί. Ξαναέγραψα τη λίστα τέσσερις φορές. Τον μεταφέρω. Ο οδοντίατρος δεν ξέρει ότι υπάρχω.",c:"moti"},
+{en:"I downloaded a meditation app. Used it once. Now it sends me reminders I swipe away. We have a silent, one-sided relationship.",gr:"Κατέβασα εφαρμογή διαλογισμού. Τη χρησιμοποίησα μία φορά. Τώρα στέλνει ειδοποιήσεις που σβήνω. Έχουμε μια σιωπηλή, μονόπλευρη σχέση.",c:"moti"},
+{en:"I don't need motivation. I need consequences. When the stakes are high enough my body produces productivity automatically. I just need to keep manufacturing crises.",gr:"Δεν χρειάζομαι κίνητρο. Χρειάζομαι συνέπειες. Όταν τα διακυβεύματα είναι αρκετά υψηλά το σώμα μου παράγει παραγωγικότητα αυτόματα. Απλά πρέπει να συνεχίσω να δημιουργώ κρίσεις.",c:"moti"},
+{en:"I cleaned my desk as a warm-up before working. Then I cleaned the shelf above it. Then I reorganised my cables. I never started work. The desk looks incredible though.",gr:"Καθάρισα το γραφείο μου ως προθέρμανση πριν δουλέψω. Μετά καθάρισα το ράφι. Μετά αναδιοργάνωσα τα καλώδια. Δεν άρχισα ποτέ. Το γραφείο όμως δείχνει απίστευτο.",c:"moti"},
+// FOOD — second batch
+{en:"I went to a restaurant and ordered something safe because I was afraid to order the thing I actually wanted. It was fine. I spent the whole meal looking at the other table's plates.",gr:"Πήγα εστιατόριο και παρήγγειλα κάτι ασφαλές γιατί φοβήθηκα να παραγγείλω αυτό που ήθελα. Ήταν εντάξει. Πέρασα όλο το γεύμα κοιτώντας τα πιάτα των άλλων.",c:"food"},
+{en:"I burned my tongue on hot coffee and then, thirty seconds later, did it again on the same cup. The second burn was entirely a choice.",gr:"Κάηκα στη γλώσσα από ζεστό καφέ και μετά, τριάντα δευτερόλεπτα αργότερα, ξανακάηκα στο ίδιο φλιτζάνι. Το δεύτερο κάψιμο ήταν καθαρά επιλογή.",c:"food"},
+{en:"I made a smoothie to be healthy. Added peanut butter. Then honey. Then granola. Then some chocolate chips 'for energy'. It was a milkshake. I called it a smoothie anyway.",gr:"Έφτιαξα smoothie για να είμαι υγιής. Έβαλα φυστικοβούτυρο. Μετά μέλι. Μετά granola. Μετά λίγα σοκολατένια chips 'για ενέργεια'. Ήταν milkshake. Το είπα smoothie παρόλα αυτά.",c:"food"},
+{en:"The 'serves 4' on the packaging is a suggestion. An optimistic one. I have never, not once, made something that served the stated number of people.",gr:"Το 'για 4 άτομα' στη συσκευασία είναι πρόταση. Αισιόδοξη. Δεν έχω φτιάξει ποτέ κάτι που να έφτανε για τον αναγραφόμενο αριθμό ατόμων.",c:"food"},
+{en:"I discovered there was leftover pizza in the fridge at 11pm. I'd been home for three hours. I checked three times. I found it on the fourth. It was worth it.",gr:"Ανακάλυψα ότι υπήρχε απομεινάρι πίτσας στο ψυγείο στις 11 το βράδυ. Ήμουν σπίτι τρεις ώρες. Έλεγξα τρεις φορές. Το βρήκα στην τέταρτη. Άξιζε.",c:"food"},
+{en:"I don't understand why recipes say 'cook until golden brown.' I can see it's golden brown. The problem is I have no idea what 'golden brown' means.",gr:"Δεν καταλαβαίνω γιατί οι συνταγές λένε 'μαγειρέψτε μέχρι να ροδίσει'. Βλέπω ότι έχει ροδίσει. Το πρόβλημα είναι ότι δεν ξέρω τι σημαίνει 'έχει ροδίσει'.",c:"food"},
+{en:"I said I wasn't going to have dessert. The waiter described the desserts anyway. I had the dessert. The waiter did this on purpose and succeeded.",gr:"Είπα ότι δεν θα έπαιρνα επιδόρπιο. Ο σερβιτόρος τα περιέγραψε παρόλα αυτά. Πήρα το επιδόρπιο. Ο σερβιτόρος το έκανε αυτό επίτηδες και πέτυχε.",c:"food"},
+// SOCIAL — second batch
+{en:"Someone replied 'lol' to a message I spent eleven minutes writing. I replied 'haha'. We are both fine. This is what friendship looks like now.",gr:"Κάποιος απάντησε 'lol' σε μήνυμα που πέρασα έντεκα λεπτά γράφοντας. Απάντησα 'haha'. Είμαστε και οι δυο καλά. Έτσι φαίνεται η φιλία τώρα.",c:"social"},
+{en:"I asked how they were and they told me. I was not prepared for an honest answer. I stood there for six minutes. We're closer now, I think.",gr:"Ρώτησα πώς είναι και μου είπαν. Δεν ήμουν προετοιμασμένος για ειλικρινή απάντηση. Στάθηκα εκεί έξι λεπτά. Νομίζω είμαστε πιο κοντά τώρα.",c:"social"},
+{en:"I have friends I only communicate with through memes. We haven't had a real conversation in two years. But we understand each other perfectly.",gr:"Έχω φίλους με τους οποίους επικοινωνώ μόνο μέσω memes. Δεν έχουμε κάνει αληθινή συζήτηση εδώ και δύο χρόνια. Αλλά ο ένας καταλαβαίνει τον άλλον τέλεια.",c:"social"},
+{en:"I said 'we should do this again sometime' at the end of a dinner I didn't particularly enjoy. The other person agreed. We both meant it zero percent.",gr:"Είπα 'πρέπει να το επαναλάβουμε κάποτε' στο τέλος ενός δείπνου που δεν απόλαυσα ιδιαίτερα. Το άλλο άτομο συμφώνησε. Και οι δυο το εννοούσαμε μηδέν τοις εκατό.",c:"social"},
+{en:"I saw someone I know while I was in a shop. I hid behind a display stand until they left. I spent eight minutes there. I'd do it again.",gr:"Είδα κάποιον γνωστό ενώ ήμουν σε κατάστημα. Κρύφτηκα πίσω από εκθέτη μέχρι να φύγει. Πέρασα οκτώ λεπτά εκεί. Θα το ξανάκανα.",c:"social"},
+{en:"Someone said 'let me know if you need anything' after some bad news. I said 'will do'. Both of us knew neither of us would be following up on this.",gr:"Κάποιος είπε 'πες μου αν χρειαστείς κάτι' μετά από άσχημα νέα. Είπα 'θα το κάνω'. Και οι δυο ξέραμε ότι κανείς μας δεν θα το συνέχιζε αυτό.",c:"social"},
+// ABSURD — second batch
+{en:"I walked into a room and stood there for so long trying to remember why I came that the room started to feel like it belonged to me.",gr:"Μπήκα σε ένα δωμάτιο και στάθηκα τόσο πολύ ψάχνοντας να θυμηθώ γιατί ήρθα που το δωμάτιο άρχισε να νιώθει σαν δικό μου.",c:"absurd"},
+{en:"A song came on that I haven't heard in fifteen years and for approximately three minutes I was seventeen again and everything was fine.",gr:"Άκουσα ένα τραγούδι που δεν είχα ακούσει εδώ και δεκαπέντε χρόνια και για περίπου τρία λεπτά ήμουν πάλι δεκαεπτά και όλα ήταν εντάξει.",c:"absurd"},
+{en:"I set a reminder on my phone for something. The reminder went off. I dismissed it. I have no memory of what it was for. I'm trusting that it worked out.",gr:"Έβαλα υπενθύμιση στο κινητό για κάτι. Η υπενθύμιση χτύπησε. Την έσβησα. Δεν θυμάμαι για τι ήταν. Πιστεύω ότι τακτοποιήθηκε.",c:"absurd"},
+{en:"I dropped something on the floor, looked at it for a moment, and decided to pick it up later. Three days have passed. It's just part of the floor now.",gr:"Έριξα κάτι στο πάτωμα, το κοίταξα μια στιγμή, και αποφάσισα να το μαζέψω αργότερα. Πέρασαν τρεις μέρες. Είναι πλέον κομμάτι του πατώματος.",c:"absurd"},
+{en:"I convinced myself I had a great idea right before falling asleep and decided to remember it in the morning. I did not remember it in the morning. It was probably nothing. It was probably everything.",gr:"Πείστηκα ότι είχα μια υπέροχη ιδέα ακριβώς πριν κοιμηθώ και αποφάσισα να τη θυμηθώ το πρωί. Δεν τη θυμήθηκα. Ήταν πιθανώς τίποτα. Ήταν πιθανώς τα πάντα.",c:"absurd"},
+{en:"I laughed at something alone in my apartment and then looked around to see if anyone saw. Nobody did. But I still felt judged.",gr:"Γέλασα με κάτι μόνος στο διαμέρισμά μου και μετά κοίταξα γύρω μου να δω αν κάποιος με είδε. Κανείς δεν με είδε. Αλλά ένιωσα κριτική παρόλα αυτά.",c:"absurd"},
+// GREEK — second batch
+{en:"Every Greek family trip involves at least one argument about parking, one about who paid last time, and one that starts mid-highway for reasons nobody can later agree on.",gr:"Κάθε οικογενειακή εκδρομή στην Ελλάδα περιλαμβάνει τουλάχιστον μία διαμάχη για parking, μία για το ποιος πλήρωσε την τελευταία φορά, και μία που ξεκινά στη μέση της εθνικής χωρίς συμφωνία για τον λόγο.",c:"gr"},
+{en:"A Greek person will disagree with your diagnosis, tell you what they think it is, prescribe something from a relative's medicine cabinet, and be offended if you go to a doctor instead.",gr:"Ένας Έλληνας θα διαφωνήσει με τη διάγνωσή σου, θα πει τι νομίζει αυτός, θα σου γράψει κάτι από το φαρμακείο ενός συγγενή, και θα προσβληθεί αν πας σε γιατρό.",c:"gr"},
+{en:"In a Greek household the volume of the TV is inversely proportional to how important the conversation happening in front of it is.",gr:"Σε ελληνικό σπίτι η ένταση της τηλεόρασης είναι αντιστρόφως ανάλογη του πόσο σημαντική είναι η συζήτηση που γίνεται μπροστά της.",c:"gr"},
+{en:"A Greek kafeneion is the only place where nothing happens at enormous speed. Men sit there for four hours doing nothing at a pace that would exhaust most people.",gr:"Ένα ελληνικό καφενείο είναι το μόνο μέρος όπου δεν γίνεται τίποτα με τεράστια ταχύτητα. Οι άντρες κάθονται εκεί τέσσερις ώρες μη κάνοντας τίποτα με ρυθμό που θα κούραζε τους περισσότερους.",c:"gr"},
+{en:"My Greek father said he'd be ready in ten minutes forty minutes ago. He is now having a separate conversation on the doorstep. We will leave when the conversation decides.",gr:"Ο Έλληνας πατέρας μου είπε θα είναι έτοιμος σε δέκα λεπτά πριν σαράντα λεπτά. Τώρα κάνει ξεχωριστή συζήτηση στην πόρτα. Θα φύγουμε όταν αποφασίσει η συζήτηση.",c:"gr"},
+{en:"There is no such thing as a quick coffee in Greece. 'Quick coffee' is a phrase that means 'we will sit here for two hours and solve problems that do not exist yet.'",gr:"Δεν υπάρχει γρήγορος καφές στην Ελλάδα. 'Γρήγορος καφές' σημαίνει 'θα καθίσουμε εδώ δύο ώρες και θα λύσουμε προβλήματα που δεν υπάρχουν ακόμα'.",c:"gr"},
+{en:"Every Greek grandmother has a special chair. You may not sit in this chair. You will not be told this directly. You will find out when you sit in it.",gr:"Κάθε Ελληνίδα γιαγιά έχει μια ειδική καρέκλα. Δεν μπορείς να καθίσεις σε αυτή. Δεν θα σου πουν αυτό απευθείας. Θα το μάθεις όταν καθίσεις.",c:"gr"},
+{en:"August in Greece: everything is closed, everyone is at the sea, nothing gets done, and somehow this is the correct state of affairs.",gr:"Αύγουστος στην Ελλάδα: όλα κλειστά, όλοι στη θάλασσα, τίποτα δεν γίνεται, και με κάποιον τρόπο αυτή είναι η σωστή κατάσταση πραγμάτων.",c:"gr"},
 ];
 
-// ── INIT ORDER ──
 function resetOrder(){jokeOrder=jokes.map((_,i)=>i)}
 resetOrder();
 document.getElementById('totalCount').textContent=jokes.length;
 
-// ── PARTICLES ──
 const emojis=['😂','🤣','😆','😄','💀','🥲','😅','😁','🤭','😜','🤪','😹'];
 const pc=document.getElementById('particles');
 function spawnParticle(){
@@ -724,7 +933,6 @@ function spawnParticle(){
 for(let i=0;i<18;i++)spawnParticle();
 setInterval(spawnParticle,900);
 
-// ── BUILD CHIPS ──
 function buildChips(){
   const el=document.getElementById('chips');
   el.innerHTML=Object.entries(cats).map(([k,v])=>
@@ -739,7 +947,6 @@ function setCategory(c){
   renderFeed();
 }
 
-// ── SPOTLIGHT ──
 function newSpotlight(){
   const pool=jokes.filter(j=>activeCategory==='all'||j.c===activeCategory);
   const j=pool[Math.floor(Math.random()*pool.length)];
@@ -755,7 +962,6 @@ function newSpotlight(){
 }
 newSpotlight();
 
-// ── SHUFFLE ──
 function shuffleJokes(){
   jokeOrder=[...jokeOrder].sort(()=>Math.random()-.5);
   shuffled=true;
@@ -763,7 +969,6 @@ function shuffleJokes(){
   showToast('Shuffled ✦');
 }
 
-// ── RENDER FEED ──
 function renderFeed(){
   const q=document.getElementById('search').value.toLowerCase().trim();
   const feed=document.getElementById('feed');
@@ -799,7 +1004,7 @@ function renderFeed(){
         <span class="joke-cat-tag">${cats[j.c]||''}</span>
         <div class="joke-text">${lang==='gr'?j.gr:j.en}</div>
         <div class="joke-actions">
-          <button class="react-btn" onclick="copyJoke(${idx})" title="Copy">⎘</button>
+          <button class="react-btn" onclick="copyJoke(${idx})" title="Copy">⎘ copy</button>
         </div>
       </div>`;
     frag.appendChild(div);
@@ -807,14 +1012,12 @@ function renderFeed(){
   feed.appendChild(frag);
 }
 
-// ── COPY ──
 function copyJoke(idx){
   const j=jokes[idx];
   const txt=lang==='gr'?j.gr:j.en;
   navigator.clipboard.writeText(txt).then(()=>showToast('Copied ✦')).catch(()=>{});
 }
 
-// ── TOAST ──
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;
@@ -822,31 +1025,43 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'),1800);
 }
 
-// ── LANG ──
-function toggleLang(){
-  lang=lang==='gr'?'en':'gr';
-  document.getElementById('langBtn').textContent=lang==='gr'?'EN / GR':'GR / EN';
-  document.getElementById('footerLang').textContent=lang==='gr'?'GR mode':'EN mode';
+function setLang(l){
+  lang=l;
+  document.getElementById('langGR').classList.toggle('active', l==='gr');
+  document.getElementById('langEN').classList.toggle('active', l==='en');
+  document.getElementById('footerLang').textContent=l==='gr'?'GR mode':'EN mode';
   newSpotlight();
   renderFeed();
 }
 
-// ── THEME ──
-let isDark = true;
 function toggleTheme(){
   isDark = !isDark;
   document.body.classList.toggle('light', !isDark);
-  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+  document.getElementById('themeSwitch').classList.toggle('light-on', !isDark);
+  document.getElementById('themeLabel').textContent = isDark ? 'Dark mode' : 'Light mode';
+  applyPalette(activePalette);
 }
 
-// ── KEYBOARD ──
+function openSettings(){
+  document.getElementById('settingsOverlay').classList.add('open');
+  document.getElementById('settingsPanel').classList.add('open');
+  document.getElementById('settingsBtn').classList.add('open');
+}
+function closeSettings(){
+  document.getElementById('settingsOverlay').classList.remove('open');
+  document.getElementById('settingsPanel').classList.remove('open');
+  document.getElementById('settingsBtn').classList.remove('open');
+}
+
 document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ closeSettings(); document.getElementById('search').blur(); }
   if(e.key==='/'&&document.activeElement!==document.getElementById('search')){
-    e.preventDefault();document.getElementById('search').focus();
+    e.preventDefault(); document.getElementById('search').focus();
   }
-  if(e.key==='Escape') document.getElementById('search').blur();
 });
 
+buildPaletteUI();
+applyPalette('gold');
 renderFeed();
 </script>
 </body>
